@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  hermes:
+    build:
+      context: .
+      dockerfile: hermes.Dockerfile
+      args:
+        TAG: v1.0.0-rc.0
+    image: hermes:v1.0.0-rc.0
+    volumes:
+      - "hermes-home:/home/hermes"
+      - ".:/config:ro"
+    command:
+      - --config
+      - /config/hermes.config
+      - start
+volumes:
+  hermes-home:
+    external: true

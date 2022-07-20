@@ -1,6 +1,6 @@
 // @ts-check
 import fs from 'fs';
-import { E } from '@agoric/eventual-send';
+import { E } from '@endo/eventual-send';
 import '@agoric/zoe/exported';
 
 // This script takes our contract code, installs it on Zoe, and makes

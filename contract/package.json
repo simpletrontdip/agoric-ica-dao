@@ -27,11 +27,12 @@
   "dependencies": {
     "@agoric/assert": "*",
     "@agoric/ertp": "*",
-    "@agoric/eventual-send": "*",
     "@agoric/harden": "0.0.4",
     "@agoric/nat": "^2.0.1",
+    "@agoric/pegasus": "*",
     "@agoric/store": "*",
     "@agoric/zoe": "*",
+    "@endo/eventual-send": "^0.15.3",
     "esm": "^3.2.5"
   },
   "keywords": [],
