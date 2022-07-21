@@ -1,4 +1,4 @@
-CHAIN_AG=agoric
+CHAIN_AG=simagoric
 CHAIN_COSMOS=theta-testnet-001
 
 HERMES=docker run --rm -vhermes-home:/home/hermes:z -v$$PWD:/config hermes:v1.0.0-rc.0 --config /config/hermes.config
@@ -47,5 +47,5 @@ task/tap-cosmos-faucet: hermes.config
 task/tap-agoric-faucet: hermes.config
 	@echo tapping agoric faucet
 	@echo agoric address $(ADDR_AG)
-	agd --home=../_agstate/keys tx bank send -ojson --keyring-backend=test --gas=auto --gas-adjustment=1.2 --broadcast-mode=block --yes --chain-id=agoric --node=tcp://localhost:26657 provision $(ADDR_AG) 13000000ubld,50000000urun
+	agd --home=../_agstate/keys tx bank send -ojson --keyring-backend=test --gas=auto --gas-adjustment=1.2 --broadcast-mode=block --yes --chain-id=$(CHAIN_AG) --node=tcp://localhost:26657 provision $(ADDR_AG) 13000000ubld,50000000urun
 	mkdir -p task && touch $@

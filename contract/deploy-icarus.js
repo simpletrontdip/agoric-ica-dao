@@ -4,7 +4,7 @@ import '@agoric/zoe/exported';
 
 const specs = {
   hostChainId: 'theta-testnet-001',
-  hostConnectionId: 'connection-739',
+  hostConnectionId: 'connection-740',
   hostPortId: 'icahost',
   controllerConnectionId: 'connection-0',
 };
