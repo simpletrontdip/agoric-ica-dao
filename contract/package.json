@@ -2,6 +2,7 @@
   "name": "governance-icarus-contract",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Contract for the governance-icarus Agoric Dapp",
   "scripts": {
     "build": "exit 0",
@@ -32,7 +33,9 @@
     "@agoric/pegasus": "*",
     "@agoric/store": "*",
     "@agoric/zoe": "*",
+    "@endo/base64": "^0.2.27",
     "@endo/eventual-send": "^0.15.3",
+    "cosmjs-types": "0.5.0",
     "esm": "^3.2.5"
   },
   "keywords": [],

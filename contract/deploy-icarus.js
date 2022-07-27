@@ -1,10 +1,11 @@
 // @ts-check
 import { E } from '@endo/eventual-send';
-import '@agoric/zoe/exported';
+
+import '@agoric/zoe/exported.js';
 
 const specs = {
   hostChainId: 'theta-testnet-001',
-  hostConnectionId: 'connection-740',
+  hostConnectionId: 'connection-752',
   hostPortId: 'icahost',
   controllerConnectionId: 'connection-0',
 };
@@ -15,10 +16,7 @@ const specs = {
  * @property {(path: string) => string} pathResolve
  */
 
-export default async function deployContract(
-  homeP,
-  { bundleSource, pathResolve },
-) {
+export default async function deploy(homeP, { bundleSource, pathResolve }) {
   const { zoe, scratch, networkVat } = await homeP;
 
   // install Icarus, later this will be done on-chain
