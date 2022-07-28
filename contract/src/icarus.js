@@ -84,12 +84,16 @@ const makeIcarus = async ({
       return state.icaAddr;
     };
 
-    return Far('icarusConnectionActions', {
-      close,
-      reconnect,
-      sendTxMsgs,
-      getIcaAddress,
-    });
+    return Far(
+      'icarusConnectionActions',
+      /** @type {IcarusConnectionActions} */
+      {
+        close,
+        reconnect,
+        sendTxMsgs,
+        getIcaAddress,
+      },
+    );
   };
 
   const getIcaAddrFromRemoteAddr = remoteAddr => {
