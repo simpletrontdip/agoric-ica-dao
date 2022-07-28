@@ -30,13 +30,21 @@
     "@agoric/ertp": "*",
     "@agoric/harden": "0.0.4",
     "@agoric/nat": "^2.0.1",
+    "@agoric/notifier": "*",
     "@agoric/pegasus": "*",
     "@agoric/store": "*",
+    "@agoric/swingset-vat": "*",
     "@agoric/zoe": "*",
     "@endo/base64": "^0.2.27",
     "@endo/eventual-send": "^0.15.3",
-    "cosmjs-types": "0.5.0",
-    "esm": "^3.2.5"
+    "@endo/far": "*",
+    "cosmjs-types": "agoric-labs/cosmjs-types#Agoric-built",
+    "esm": "^3.2.5",
+    "long": "^5.2.0",
+    "protobufjs": "agoric-labs/protobuf.js#Agoric-built"
+  },
+  "resolutions": {
+    "**/protobufjs": "agoric-labs/protobuf.js#Agoric-built"
   },
   "keywords": [],
   "repository": {

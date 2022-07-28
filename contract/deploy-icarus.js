@@ -21,7 +21,7 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
 
   // install Icarus, later this will be done on-chain
   const bundle = await bundleSource(
-    pathResolve(`@agoric/pegasus/src/icarus.js`),
+    pathResolve(`./src/icarus.js`),
   );
   const installation = await E(zoe).install(bundle);
 

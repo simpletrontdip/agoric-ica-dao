@@ -291,6 +291,16 @@
   resolved "https://registry.yarnpkg.com/@agoric/nat/-/nat-4.1.0.tgz#102794e033ffc183a20b0f86031a2e76d204b9f6"
   integrity sha512-2oMoh3DMn0Fx8HChPPiH8irBNdT/33ttxAZJohhd3nU3gyBRQ1u+eEoOQWfSkrE6M02iMkQM7GE9MzGmjQ6bHg==
 
+"@agoric/notifier@*", "@agoric/notifier@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@agoric/notifier/-/notifier-0.4.0.tgz#1958f7fe105d95c0a338ed5a3ad25e891e6f37b6"
+  integrity sha512-4FtawDGpUhifczOwG4+z+yg3R5HfupLgUS8G+T8a5efe42y/z9CzaOeSn/1vvD9CX1M7Y/RKsZB21MLlee3+Cw==
+  dependencies:
+    "@agoric/assert" "^0.4.0"
+    "@endo/eventual-send" "^0.15.3"
+    "@endo/marshal" "^0.6.7"
+    "@endo/promise-kit" "^0.2.41"
+
 "@agoric/notifier@^0.3.10":
   version "0.3.10"
   resolved "https://registry.yarnpkg.com/@agoric/notifier/-/notifier-0.3.10.tgz#d8056183542c94023d0f92cae3f1967783e66bc8"
@@ -300,16 +310,6 @@
     "@agoric/eventual-send" "^0.13.10"
     "@agoric/marshal" "^0.4.7"
     "@agoric/promise-kit" "^0.2.9"
-
-"@agoric/notifier@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@agoric/notifier/-/notifier-0.4.0.tgz#1958f7fe105d95c0a338ed5a3ad25e891e6f37b6"
-  integrity sha512-4FtawDGpUhifczOwG4+z+yg3R5HfupLgUS8G+T8a5efe42y/z9CzaOeSn/1vvD9CX1M7Y/RKsZB21MLlee3+Cw==
-  dependencies:
-    "@agoric/assert" "^0.4.0"
-    "@endo/eventual-send" "^0.15.3"
-    "@endo/marshal" "^0.6.7"
-    "@endo/promise-kit" "^0.2.41"
 
 "@agoric/pegasus@*", "@agoric/pegasus@^0.7.2":
   version "0.7.2"
@@ -475,6 +475,33 @@
     node-lmdb "^0.9.5"
     tmp "^0.2.1"
 
+"@agoric/swingset-vat@*", "@agoric/swingset-vat@^0.28.0":
+  version "0.28.0"
+  resolved "https://registry.yarnpkg.com/@agoric/swingset-vat/-/swingset-vat-0.28.0.tgz#fc53271c93acb64d9d791f66af1a3dbd5c4ebdb7"
+  integrity sha512-Wfs3iQYvy7VFPcwti1SxuI5Upb815uOrJBAP+CH7vTMGbTU6T+1FlZbBICdBcV9qc7NjhCggiGLt6Mmwuk+AUA==
+  dependencies:
+    "@agoric/assert" "^0.4.0"
+    "@agoric/nat" "^4.1.0"
+    "@agoric/notifier" "^0.4.0"
+    "@agoric/store" "^0.7.2"
+    "@agoric/swing-store" "^0.7.0"
+    "@agoric/xsnap" "^0.13.0"
+    "@endo/base64" "^0.2.25"
+    "@endo/bundle-source" "^2.2.0"
+    "@endo/captp" "^2.0.7"
+    "@endo/check-bundle" "^0.2.3"
+    "@endo/compartment-mapper" "^0.7.5"
+    "@endo/eventual-send" "^0.15.3"
+    "@endo/import-bundle" "^0.2.45"
+    "@endo/init" "^0.5.41"
+    "@endo/marshal" "^0.6.7"
+    "@endo/promise-kit" "^0.2.41"
+    "@endo/zip" "^0.2.25"
+    anylogger "^0.21.0"
+    import-meta-resolve "^1.1.1"
+    node-lmdb "^0.9.5"
+    semver "^6.3.0"
+
 "@agoric/swingset-vat@^0.16.3":
   version "0.16.3"
   resolved "https://registry.yarnpkg.com/@agoric/swingset-vat/-/swingset-vat-0.16.3.tgz#6538527f7165bbb8f31eab6a064fff4401623277"
@@ -510,33 +537,6 @@
     ses "^0.12.7"
     tmp "^0.2.1"
     yargs "^14.2.0"
-
-"@agoric/swingset-vat@^0.28.0":
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/@agoric/swingset-vat/-/swingset-vat-0.28.0.tgz#fc53271c93acb64d9d791f66af1a3dbd5c4ebdb7"
-  integrity sha512-Wfs3iQYvy7VFPcwti1SxuI5Upb815uOrJBAP+CH7vTMGbTU6T+1FlZbBICdBcV9qc7NjhCggiGLt6Mmwuk+AUA==
-  dependencies:
-    "@agoric/assert" "^0.4.0"
-    "@agoric/nat" "^4.1.0"
-    "@agoric/notifier" "^0.4.0"
-    "@agoric/store" "^0.7.2"
-    "@agoric/swing-store" "^0.7.0"
-    "@agoric/xsnap" "^0.13.0"
-    "@endo/base64" "^0.2.25"
-    "@endo/bundle-source" "^2.2.0"
-    "@endo/captp" "^2.0.7"
-    "@endo/check-bundle" "^0.2.3"
-    "@endo/compartment-mapper" "^0.7.5"
-    "@endo/eventual-send" "^0.15.3"
-    "@endo/import-bundle" "^0.2.45"
-    "@endo/init" "^0.5.41"
-    "@endo/marshal" "^0.6.7"
-    "@endo/promise-kit" "^0.2.41"
-    "@endo/zip" "^0.2.25"
-    anylogger "^0.21.0"
-    import-meta-resolve "^1.1.1"
-    node-lmdb "^0.9.5"
-    semver "^6.3.0"
 
 "@agoric/tame-metering@^1.3.6":
   version "1.3.6"
@@ -2041,7 +2041,7 @@
   resolved "https://registry.yarnpkg.com/@endo/eventual-send/-/eventual-send-0.15.5.tgz#116233ad86beac385604ee8fe12dc0ff4c5c13cd"
   integrity sha512-/xc8g2pbZ/IBRps5TQ4YwyxwUKmX7DY1jsj79mAypVkhXzk5jWQ9eRzGmR+j/uYgS6rRwi0DLdtVUTKRaaH5BA==
 
-"@endo/far@^0.2.3":
+"@endo/far@*", "@endo/far@^0.2.3":
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@endo/far/-/far-0.2.5.tgz#b6a95b95f00f83211f15677da68703e97c7de440"
   integrity sha512-xtslfNx0nwqRQChy7JgHLe3aTA+jjyrRI3mlVu6Fxv1tNzGrV4VpVyB9ryBOYUjWA1ddhCDJpV/DUhxM9480MQ==
@@ -4927,13 +4927,12 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-cosmjs-types@0.5.0:
+cosmjs-types@agoric-labs/cosmjs-types#Agoric-built:
   version "0.5.0"
-  resolved "https://registry.yarnpkg.com/cosmjs-types/-/cosmjs-types-0.5.0.tgz#2497a2c5ddf62a8e8dea03e0725b8cd763d4ab4f"
-  integrity sha512-Qy2yxDp5HasBUnBV5OL9EOuTJw94LAbCWfiRb5QcW1sqh93KSSY5PpNMB3rTsxwuPcf/k3CNRY02DeQMjrsJuA==
+  resolved "https://codeload.github.com/agoric-labs/cosmjs-types/tar.gz/23773074b3b1a368733ae389f55a363feac32aef"
   dependencies:
     long "^4.0.0"
-    protobufjs "~6.11.2"
+    protobufjs agoric-labs/protobuf.js#Agoric-built
 
 create-ecdh@^4.0.0:
   version "4.0.4"
@@ -8781,6 +8780,11 @@ long@^4.0.0:
   resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
   integrity sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==
 
+long@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/long/-/long-5.2.0.tgz#2696dadf4b4da2ce3f6f6b89186085d94d52fd61"
+  integrity sha512-9RTUNjK60eJbx3uz+TEGF7fUr29ZDxR5QzXcyDpeSfeH28S9ycINflOgOlppit5U+4kNTe83KQnMEerw7GmE8w==
+
 loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
@@ -10806,10 +10810,9 @@ prop-types@^15.6.2, prop-types@^15.7.2:
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
-protobufjs@~6.11.2:
+protobufjs@agoric-labs/protobuf.js#Agoric-built:
   version "6.11.3"
-  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.11.3.tgz#637a527205a35caa4f3e2a9a4a13ddffe0e7af74"
-  integrity sha512-xL96WDdCZYdU7Slin569tFX712BxsxslWwAfAhCYjQKGTq7dAU91Lomy6nLLhh/dyGhk/YH4TwTSRxTzhuHyZg==
+  resolved "https://codeload.github.com/agoric-labs/protobuf.js/tar.gz/014f714a0b9231ccddb1b24e2877522042d13a95"
   dependencies:
     "@protobufjs/aspromise" "^1.1.2"
     "@protobufjs/base64" "^1.1.2"

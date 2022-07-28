@@ -1,9 +1,7 @@
 // @ts-check
 import { E } from '@endo/eventual-send';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx.js';
-import { encodeBase64 } from '@endo/base64';
-
-import { CosmosTx } from './src/package.js';
+import { Any } from 'cosmjs-types/google/protobuf/any.js';
 
 import '@agoric/zoe/exported.js';
 
@@ -32,20 +30,18 @@ export default async function deploy(
 
   const msgBytes = MsgSend.encode(sendMsg).finish();
 
-  const comsosTx = CosmosTx.fromPartial({
-    messages: [
-      {
-        typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-        value: msgBytes,
-      },
-    ],
-  });
-  const cosmosTxBytes = CosmosTx.encode(comsosTx).finish();
-  const b64CosmosTxByte = encodeBase64(cosmosTxBytes);
+  const txMsgs = [
+    {
+      typeUrl: '/cosmos.bank.v1beta1.MsgSend',
+      value: msgBytes,
+    },
+  ];
 
-  console.log('Here ==>', b64CosmosTxByte);
+  console.log('Serializing tx messages');
+  const txMsgsJson = txMsgs.map(m => Any.toJSON(m));
 
-  const result = await E(actions).sendTxMsg(b64CosmosTxByte);
+  // send the json encoded
+  const result = await E(actions).sendTxMsgs(txMsgsJson);
 
   console.log('Done, result', result);
 }

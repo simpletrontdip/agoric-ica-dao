@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from 'long';
 import _m0 from 'protobufjs/minimal.js';
+
 import { atob, btoa } from '@endo/base64';
 
 function createBaseAny() {
