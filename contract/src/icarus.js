@@ -129,12 +129,23 @@ const makeIcarus = async ({
         },
         async onClose(_c) {
           try {
-            const { localAddr, remoteAddr } = ownerToIcaState.get(ownerId);
-            ownerToIcaState.delete(ownerId);
+            const {
+              localAddr,
+              remoteAddr,
+              icaAddr,
+              ownerId,
+            } = ownerToIcaState.get(ownerId);
+
             const state = harden({
               localAddr,
               remoteAddr,
+              // actions,
+              icaAddr,
+              ownerId,
             });
+
+            // update new state w/o actions
+            ownerToIcaState.set(ownerId, state);
             publication.updateState(state);
           } catch (error) {
             publication.fail(error);

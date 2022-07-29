@@ -34,7 +34,23 @@ const safeJSONParseObject = s => {
  * @returns {Promise<string>}
  */
 export const makeICS27ICAPacket = async (msgs, memo = '') => {
-  const messages = Array.from(msgs).map(msg => Any.fromJSON(msg));
+  const messages = Array.from(msgs).map((msg, idx) => {
+    const txMsg = Any.fromJSON(msg);
+    const { typeUrl, value } = txMsg;
+
+    // make some assertions
+    assert(typeUrl, X`Msg typeUrl is required, got ${typeUrl} at index ${idx}`);
+    assert(
+      value && value.length,
+      X`Msg value is required, got ${value} at index ${idx}`,
+    );
+
+    // return valididate tx
+    return txMsg;
+  });
+
+  assert(messages.length, X`Messages must not be empty`);
+
   const comsosTx = CosmosTx.fromPartial({
     messages,
   });
@@ -59,8 +75,10 @@ export const makeICS27ICAPacket = async (msgs, memo = '') => {
  */
 export const assertICS27ICAPacketAck = async ack => {
   const { result, error, data } = safeJSONParseObject(ack);
-  assert(error === undefined, `ICS27 ICA error ${error}`);
-  assert(result !== undefined, `ICS27 ICA missing result in ${ack}`);
+
+  assert(error === undefined, X`ICS27 ICA error ${error}`);
+  assert(result !== undefined, X`ICS27 ICA missing result in ${ack}`);
+
   if (result !== ICS27_ICA_SUCCESS_RESULT) {
     // We don't want to throw an error here, because we want only to be able to
     // differentiate between a packet that failed and a packet that succeeded.
