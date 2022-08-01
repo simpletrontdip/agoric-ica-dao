@@ -1,6 +1,7 @@
 // @ts-check
 import { E } from '@endo/eventual-send';
 import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx.js';
+import { MsgDelegate } from 'cosmjs-types/cosmos/staking/v1beta1/tx.js';
 import { Any } from 'cosmjs-types/google/protobuf/any.js';
 
 import '@agoric/zoe/exported.js';
@@ -28,12 +29,24 @@ export default async function deploy(
     toAddress: 'cosmos1h68l7uqw255w4m2v82rqwsl6p2qmkrg08u5mye',
   });
 
-  const msgBytes = MsgSend.encode(sendMsg).finish();
+  const sendMsgBytes = MsgSend.encode(sendMsg).finish();
+
+  const delegateMsg = MsgDelegate.fromPartial({
+    amount: { denom: 'uatom', amount: '1000' },
+    delegatorAddress: icaAddress,
+    validatorAddress: 'cosmos1h68l7uqw255w4m2v82rqwsl6p2qmkrg08u5mye',
+  });
+
+  const delegateMsgBytes = MsgDelegate.encode(delegateMsg).finish();
 
   const txMsgs = [
     {
       typeUrl: '/cosmos.bank.v1beta1.MsgSend',
-      value: msgBytes,
+      value: sendMsgBytes,
+    },
+    {
+      typeUrl: '/cosmos.staking.v1beta1.MsgDelegate',
+      value: delegateMsgBytes,
     },
   ];
 
