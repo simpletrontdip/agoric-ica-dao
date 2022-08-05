@@ -31,7 +31,7 @@ export default async function deploy(
         console.log('Connected', { localAddr, remoteAddr });
         await E(scratch).set('cosmoshubIcaActions', actions);
 
-        console.log('My address', await E(actions).getIcaAddress());
+        console.log('My address', await E(actions).getAddress());
         kit.resolve('Done');
       } else {
         // We're closed.

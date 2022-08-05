@@ -54,6 +54,7 @@ export default async function deploy(
   const txMsgsJson = txMsgs.map(m => Any.toJSON(m));
 
   // send the json encoded
+  console.log('Sending...');
   const result = await E(actions).sendTxMsgs(txMsgsJson);
 
   console.log('Done, result', result);
