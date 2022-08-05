@@ -20,9 +20,7 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
   const { zoe, scratch, networkVat } = await homeP;
 
   // install Icarus, later this will be done on-chain
-  const bundle = await bundleSource(
-    pathResolve(`./src/icarus.js`),
-  );
+  const bundle = await bundleSource(pathResolve(`./src/icarus/icarus.js`));
   const installation = await E(zoe).install(bundle);
 
   // start instance

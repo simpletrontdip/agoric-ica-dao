@@ -19,10 +19,13 @@ export default async function deploy(
   const [bridge] = await Promise.all([E(scratch).get('cosmoshubIcarusBridge')]);
 
   console.log('Registering ICA');
-  const subscription = await E(bridge).register();
+  const { subscription, icaActions } = await E(bridge).register();
 
   console.log('Writing Subscription');
   await E(scratch).set('cosmoshubSubscription', subscription);
+
+  console.log('Writing Ica Actions');
+  await E(scratch).set('cosmoshubIcaActions', icaActions);
 
   console.log('Done');
 }

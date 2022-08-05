@@ -21,7 +21,7 @@ export default async function deploy(
   console.log('Getting actions from home scratch');
   const actions = await E(scratch).get('cosmoshubIcaActions');
 
-  const icaAddress = await E(actions).getIcaAddress();
+  const icaAddress = await E(actions).getAddress();
 
   const sendMsg = MsgSend.fromPartial({
     amount: [{ denom: 'uatom', amount: '1000' }],

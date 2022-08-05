@@ -38,65 +38,56 @@ const makeIcarus = async ({
 
   const ownerToIcaKit = makeLegacyMap('ownerToIcaKit');
   const ownerToIcaState = makeLegacyMap('ownerToIcaState');
+  const ownerToActiveConnectionP = makeLegacyMap('ownerToActiveConnectionP');
 
   const nextOwnerId = makeIdGenerator(`${controllerConnectionId}-owner-`);
 
+  /**
+   * Make an ICA port identify this user on host chain
+   * @param {String} ownerId
+   * @returns
+   */
   const makeIcaPort = async ownerId => {
     const portId = `icacontroller-${ownerId}`;
     return E(networkVat).bind(`/ibc-port/${portId}`);
   };
 
   /**
-   * @param {*} conn
-   * @param {*} ownerId
-   * @returns {IcarusConnectionActions}
+   * @param {String} ownerId
+   * @returns {IcarusActions}
    */
-  const makeIcarusConnectionActions = (conn, ownerId) => {
-    let closed = false;
-
-    const close = () => {
-      if (closed) {
-        return null;
-      }
-
-      closed = true;
-      return E(conn).close();
-    };
-
-    const reconnect = async () => {
-      await close();
-
-      // XXX trigger reconnect, do no awaiting
-      const { port, handler, publication } = ownerToIcaKit.get(ownerId);
-      // eslint-disable-next-line no-use-before-define
-      await connectIcaHost(port, handler, publication);
-    };
-
+  const makeIcarusActions = ownerId => {
     const sendTxMsgs = async msgs => {
+      const conn = await getIcaActiveChannel(ownerId);
       const icaTxPackage = await E(icaProtocol).makeICAPacket(msgs);
       return E(conn)
         .send(icaTxPackage)
         .then(ack => E(icaProtocol).assertICAPacketAck(ack));
     };
 
-    const getIcaAddress = async () => {
+    const isReady = () => {
+      const state = ownerToIcaState.get(ownerId);
+      return state.isReady;
+    };
+
+    const getAddress = async () => {
+      await getIcaActiveChannel(ownerId);
       const state = ownerToIcaState.get(ownerId);
       return state.icaAddr;
     };
 
     return Far(
-      'icarusConnectionActions',
-      /** @type {IcarusConnectionActions} */
+      'icarusActions',
+      /** @type {IcarusActions} */
       {
-        close,
-        reconnect,
         sendTxMsgs,
-        getIcaAddress,
+        isReady,
+        getAddress,
       },
     );
   };
 
-  const getIcaAddrFromRemoteAddr = remoteAddr => {
+  const parseIcaAddr = remoteAddr => {
     const pairs = parse(remoteAddr);
     const version = pairs.find(([key]) => key === 'ordered')[1];
     const metaData = JSON.parse(version);
@@ -108,20 +99,23 @@ const makeIcarus = async ({
     const { subscription, publication } = makeSubscriptionKit();
     return {
       handler: Far('icarusConnectionHandler', {
-        async onOpen(c, localAddr, remoteAddr) {
+        async onOpen(_c, localAddr, remoteAddr) {
           try {
-            const icaAddr = getIcaAddrFromRemoteAddr(remoteAddr);
-            const actions = makeIcarusConnectionActions(c, ownerId);
+            const icaAddr = parseIcaAddr(remoteAddr);
+            const currentState = ownerToIcaState.get(ownerId);
 
             const state = harden({
+              ...currentState,
               localAddr,
               remoteAddr,
-              actions,
               icaAddr,
-              ownerId,
+              isReady: true,
             });
 
-            ownerToIcaState.init(ownerId, state);
+            // update existing state
+            ownerToIcaState.set(ownerId, state);
+
+            // notify changes
             publication.updateState(state);
           } catch (error) {
             publication.fail(error);
@@ -129,23 +123,20 @@ const makeIcarus = async ({
         },
         async onClose(_c) {
           try {
-            const {
-              localAddr,
-              remoteAddr,
-              icaAddr,
-              ownerId,
-            } = ownerToIcaState.get(ownerId);
+            const currentState = ownerToIcaState.get(ownerId);
 
             const state = harden({
-              localAddr,
-              remoteAddr,
-              // actions,
-              icaAddr,
-              ownerId,
+              ...currentState,
+              isReady: false,
             });
 
-            // update new state w/o actions
+            // unset active connection
+            ownerToActiveConnectionP.delete(ownerId);
+
+            // update new state
             ownerToIcaState.set(ownerId, state);
+
+            // notify changes
             publication.updateState(state);
           } catch (error) {
             publication.fail(error);
@@ -172,11 +163,43 @@ const makeIcarus = async ({
       .catch(publication.fail);
   };
 
+  const setupIcaChannelOnHost = async ownerId => {
+    const { port, handler, publication } = ownerToIcaKit.get(ownerId);
+
+    const connectionP = connectIcaHost(port, handler, publication);
+    ownerToActiveConnectionP.init(ownerId, connectionP);
+
+    return connectionP;
+  };
+
+  /**
+   * Get ICA active channel, re-connect if needed
+   * @param {String} ownerId
+   * @returns {Promise<Connection>}
+   */
+  const getIcaActiveChannel = async ownerId => {
+    if (ownerToActiveConnectionP.has(ownerId)) {
+      return ownerToActiveConnectionP.get(ownerId);
+    }
+
+    // active channel has been cleared (maybe by a timeout)
+    // set it up again
+    return setupIcaChannelOnHost(ownerId);
+  };
+
   return Far(`icarus-to-${hostChainId}`, {
     /**
      * Register an ICA account, return a subscription for action kit
      *
-     * @returns {Subscription<IcarusConnectionActions>}
+     * @typedef IcarusState
+     * @property {IcarusActions} actions
+     * @property {boolean} isReady
+     * @property {ownerId} string
+     *
+     * @returns {{
+     *  icaActions: IcarusActions
+     *  subscription: Subscription<IcarusState>
+     * }}
      */
     async register() {
       const ownerId = nextOwnerId();
@@ -186,7 +209,6 @@ const makeIcarus = async ({
       );
 
       const port = await makeIcaPort(ownerId);
-
       const { handler, subscription, publication } = makeIcarusConnectionKit(
         ownerId,
       );
@@ -197,12 +219,25 @@ const makeIcarus = async ({
         publication,
       });
 
+      const actions = makeIcarusActions(ownerId);
+      const icaState = harden({
+        ownerId,
+        actions,
+        isReady: false,
+      });
+
+      // init the state
       ownerToIcaKit.init(ownerId, icaKit);
+      ownerToIcaState.init(ownerId, icaState);
 
       // start connecting ica host
-      connectIcaHost(port, handler, publication);
+      setupIcaChannelOnHost(ownerId);
 
-      return subscription;
+      return {
+        ownerId,
+        subscription,
+        icaActions: actions,
+      };
     },
   });
 };
@@ -240,7 +275,7 @@ const start = async zcf => {
   const getIcarusBridge = async connectionId => {
     assert(
       connectionIdToBridge.has(connectionId),
-      X`No bridge found for connection ${connectionId}`,
+      `No bridge found for connection ${connectionId}`,
     );
     return connectionIdToBridge.get(connectionId);
   };
