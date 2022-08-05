@@ -34,7 +34,7 @@ export default async function deploy(
   const delegateMsg = MsgDelegate.fromPartial({
     amount: { denom: 'uatom', amount: '1000' },
     delegatorAddress: icaAddress,
-    validatorAddress: 'cosmos1h68l7uqw255w4m2v82rqwsl6p2qmkrg08u5mye',
+    validatorAddress: 'cosmosvaloper10v6wvdenee8r9l6wlsphcgur2ltl8ztkfrvj9a',
   });
 
   const delegateMsgBytes = MsgDelegate.encode(delegateMsg).finish();
