@@ -74,17 +74,19 @@ export const makeICS27ICAPacket = async (msgs, memo = '') => {
  * @returns {Promise<void>}
  */
 export const assertICS27ICAPacketAck = async ack => {
-  const { result, error, data } = safeJSONParseObject(ack);
+  const { result, error, data, responses } = safeJSONParseObject(ack);
 
-  assert(error === undefined, X`ICS27 ICA error ${error}`);
-  assert(result !== undefined, X`ICS27 ICA missing result in ${ack}`);
+  assert(error === undefined, `ICS27 ICA error ${error}`);
+  assert(result !== undefined, `ICS27 ICA missing result in ${ack}`);
 
   if (result !== ICS27_ICA_SUCCESS_RESULT) {
     // We don't want to throw an error here, because we want only to be able to
     // differentiate between a packet that failed and a packet that succeeded.
     console.warn(`ICS27 ICA succeeded with unexpected result: ${result}`);
   }
-  return data;
+
+  // `responses` for version > v0.45, `data` for older sdk
+  return data || responses;
 };
 
 /** @type {ICAProtocol} */

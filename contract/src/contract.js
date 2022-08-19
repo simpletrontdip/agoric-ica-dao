@@ -42,7 +42,12 @@ const start = async (zcf, privateArgs) => {
   observeIteration(subscription, {
     updateState(connectionState) {
       const { isReady, icaAddr, localAddr, remoteAddr } = connectionState;
-      console.log('ICA state changed', isReady, icaAddr, localAddr, remoteAddr);
+      console.log('ICA state changed', {
+        isReady,
+        icaAddr,
+        localAddr,
+        remoteAddr,
+      });
     },
     fail(error) {
       console.error('Error', error);
@@ -74,14 +79,6 @@ const start = async (zcf, privateArgs) => {
       });
       return E(icaActions).sendTxMsgs([msg]);
     },
-    async sendClaimReward(params) {
-      const icaAddress = await E(icaActions).getAddress();
-      const msg = buildClaimRewardMsg({
-        delegatorAddress: icaAddress,
-        ...params,
-      });
-      return E(icaActions).sendTxMsgs([msg]);
-    },
     async sendVote(params) {
       const icaAddress = await E(icaActions).getAddress();
       const msg = buildVoteMsg({
@@ -104,7 +101,21 @@ const start = async (zcf, privateArgs) => {
     },
   };
 
-  const creatorFacet = makeGovernorFacet(publicApis, governedApis);
+  const creatorApis = {
+    async sendClaimReward(params) {
+      const icaAddress = await E(icaActions).getAddress();
+      const msg = buildClaimRewardMsg({
+        delegatorAddress: icaAddress,
+        ...params,
+      });
+      return E(icaActions).sendTxMsgs([msg]);
+    },
+  };
+
+  const creatorFacet = makeGovernorFacet(
+    Far('ICA creator', creatorApis),
+    governedApis,
+  );
   const publicFacet = augmentPublicFacet(Far('ICA public', publicApis));
 
   return { creatorFacet, publicFacet };
