@@ -1,11 +1,12 @@
 // @ts-check
 import { E } from '@endo/eventual-send';
+import { deeplyFulfilled } from '@endo/marshal';
 
 import '@agoric/zoe/exported.js';
 
 const specs = {
   hostChainId: 'theta-testnet-001',
-  hostConnectionId: 'connection-759',
+  hostConnectionId: 'connection-787',
   hostPortId: 'icahost',
   controllerConnectionId: 'connection-0',
 };
@@ -17,17 +18,23 @@ const specs = {
  */
 
 export default async function deploy(homeP, { bundleSource, pathResolve }) {
-  const { zoe, scratch, networkVat } = await homeP;
+  const { zoe, scratch, networkVat, icarusStorage } = await homeP;
 
   // install Icarus, later this will be done on-chain
   const bundle = await bundleSource(pathResolve(`./src/icarus/icarus.js`));
   const installation = await E(zoe).install(bundle);
 
+  const terms = await deeplyFulfilled({
+    networkVat,
+    icarusStorage,
+  });
   // start instance
   console.log('Starting instance');
-  const { instance, publicFacet, creatorFacet } = await E(
-    zoe,
-  ).startInstance(installation, undefined, { networkVat });
+  const { instance, publicFacet, creatorFacet } = await E(zoe).startInstance(
+    installation,
+    undefined,
+    terms,
+  );
 
   // make bridge
   console.log('Making bridge', specs.hostChainId);

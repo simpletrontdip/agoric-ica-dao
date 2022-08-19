@@ -28,6 +28,7 @@
   "dependencies": {
     "@agoric/assert": "*",
     "@agoric/ertp": "*",
+    "@agoric/governance": "*",
     "@agoric/harden": "0.0.4",
     "@agoric/nat": "^2.0.1",
     "@agoric/notifier": "*",

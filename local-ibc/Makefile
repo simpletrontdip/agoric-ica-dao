@@ -47,5 +47,5 @@ task/tap-cosmos-faucet: hermes.config
 task/tap-agoric-faucet: hermes.config
 	@echo tapping agoric faucet
 	@echo agoric address $(ADDR_AG)
-	agd --home=../_agstate/keys tx bank send -ojson --keyring-backend=test --gas=auto --gas-adjustment=1.2 --broadcast-mode=block --yes --chain-id=$(CHAIN_AG) --node=tcp://localhost:26657 provision $(ADDR_AG) 13000000ubld,50000000urun
+	agd --home=../_agstate/keys tx bank send -ojson --keyring-backend=test --gas=auto --gas-adjustment=1.2 --broadcast-mode=block --yes --chain-id=$(CHAIN_AG) --node=tcp://localhost:26657 provision $(ADDR_AG) 13000000ubld,50000000uist
 	mkdir -p task && touch $@

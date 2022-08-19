@@ -41,36 +41,30 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
     E(E(zoe).getInvitationIssuer()).getAmountOf(poserInvitationP),
   ]);
 
-  const storageNode = null;
-  const marshaller = await E(board).getReadonlyMarshaller();
+  const icaTerms = harden({
+    governedParams: {
+      Electorate: {
+        type: ParamTypes.INVITATION,
+        value: poserInvitationAmount,
+      },
+      IcarusInstance: {
+        type: ParamTypes.INSTANCE,
+        value: icarusInstance,
+      },
+      IcarusConnection: {
+        type: ParamTypes.STRING,
+        value: 'connection-0',
+      },
+    },
+  });
 
   const icaGovernorTerms = {
     timer,
     electorateInstance,
     governedContractInstallation: icaContractInstall,
     governed: {
-      terms: {
-        governedParams: {
-          Electorate: {
-            type: ParamTypes.INVITATION,
-            value: poserInvitationAmount,
-          },
-          IcarusInstance: {
-            type: ParamTypes.INSTANCE,
-            value: icarusInstance,
-          },
-          IcarusConnection: {
-            type: ParamTypes.STRING,
-            value: 'connection-0',
-          },
-        },
-      },
+      terms: icaTerms,
       issuerKeywordRecord: {},
-      privateArgs: {
-        initialPoserInvitation: poserInvitation,
-        storageNode,
-        marshaller,
-      },
     },
   };
 
@@ -78,6 +72,9 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
   console.log('Starting governor');
   const g = await E(zoe).startInstance(governorInstall, {}, icaGovernorTerms, {
     electorateCreatorFacet: committeeCreator,
+    governed: {
+      initialPoserInvitation: poserInvitation,
+    },
   });
 
   const [creatorFacet, publicFacet, instance] = await Promise.all([

@@ -18,41 +18,18 @@ const start = async (zcf, privateArgs) => {
     augmentPublicFacet,
     makeGovernorFacet,
     params,
-  } = await handleParamGovernance(
-    zcf,
-    privateArgs.initialPoserInvitation,
-    {
-      [ICARUS_INSTANCE]: ParamTypes.INSTANCE,
-      [ICARUS_CONNECTION]: ParamTypes.STRING,
-    },
-    privateArgs.storageNode,
-    privateArgs.marshaller,
-  );
+  } = await handleParamGovernance(zcf, privateArgs.initialPoserInvitation, {
+    [ICARUS_INSTANCE]: ParamTypes.INSTANCE,
+    [ICARUS_CONNECTION]: ParamTypes.STRING,
+  });
 
   const zoe = zcf.getZoeService();
-  const icarusPublicFacet = E(zoe).getPublicFacet(params.getIcarusInstance());
+  let isRegistered = false;
+  let icaActions = null;
 
-  const icarusBridge = await E(icarusPublicFacet).getIcarusBridge(
-    params.getIcarusConnection(),
-  );
-
-  const { icaActions, subscription } = await E(icarusBridge).register();
-
-  // observe the change
-  observeIteration(subscription, {
-    updateState(connectionState) {
-      const { isReady, icaAddr, localAddr, remoteAddr } = connectionState;
-      console.log('ICA state changed', {
-        isReady,
-        icaAddr,
-        localAddr,
-        remoteAddr,
-      });
-    },
-    fail(error) {
-      console.error('Error', error);
-    },
-  });
+  const setIcaActions = actions => {
+    icaActions = actions;
+  };
 
   const governedApis = {
     async sendDelegate(params) {
@@ -110,13 +87,44 @@ const start = async (zcf, privateArgs) => {
       });
       return E(icaActions).sendTxMsgs([msg]);
     },
+    async registerAccount() {
+      if (isRegistered) {
+        throw Error('Already registered');
+      }
+      isRegistered = true;
+      const icarusInstance = params.getIcarusInstance();
+      const icarusConnection = params.getIcarusConnection();
+      assert(icarusInstance, `Icarus instance is required`);
+      const icarusPublicFacet = await E(zoe).getPublicFacet(icarusInstance);
+      const icarusBridge = await E(icarusPublicFacet).getIcarusBridge(
+        icarusConnection,
+      );
+      assert(
+        icarusPublicFacet,
+        `Could not get Icarus bridge with connection ${icarusConnection}`,
+      );
+      const { icaActions, subscription } = await E(icarusBridge).register();
+      setIcaActions(icaActions);
+      // observe the change
+      observeIteration(subscription, {
+        updateState(connectionState) {
+          const { isReady, icaAddr, localAddr, remoteAddr } = connectionState;
+          console.log('ICA state changed', {
+            isReady,
+            icaAddr,
+            localAddr,
+            remoteAddr,
+          });
+        },
+        fail(error) {
+          console.error('Error', error);
+        },
+      });
+    },
   };
 
-  const creatorFacet = makeGovernorFacet(
-    Far('ICA creator', creatorApis),
-    governedApis,
-  );
-  const publicFacet = augmentPublicFacet(Far('ICA public', publicApis));
+  const creatorFacet = makeGovernorFacet(creatorApis, governedApis);
+  const publicFacet = augmentPublicFacet(publicApis);
 
   return { creatorFacet, publicFacet };
 };
