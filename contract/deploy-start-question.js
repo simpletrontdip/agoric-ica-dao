@@ -30,7 +30,7 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
     },
   });
 
-  const votingDuration = 30n;
+  const votingDuration = 3n;
   const now = await E(chainTimerService).getCurrentTimestamp();
   const deadline = now + votingDuration;
 
@@ -39,9 +39,13 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
   ).voteOnParamChanges(binaryVoteInstall, deadline, paramChangeSpec);
 
   console.log('Writing question details');
-  await E(scratch).set('icaQuestionDetails', details);
-
   const publicFacet = E(zoe).getPublicFacet(instance);
+
+  await Promise.all([
+    E(scratch).set('icaQuestionPublicFacet', publicFacet),
+    E(scratch).set('icaQuestionDetails', details),
+  ]);
+
   const voteOutcomeP = E(publicFacet)
     .getOutcome()
     .then(outcome => console.log(`vote outcome: ${outcome}`))
@@ -51,8 +55,8 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
     console.log(`updated to (${outcome})`),
   ).catch(e => console.log(`update failed: ${e}`));
 
-  // await voteOutcomeP;
-  // await updateOutcomeP;
+  await voteOutcomeP;
+  await updateOutcomeP;
 
   console.log('Done');
 }

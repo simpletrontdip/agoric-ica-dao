@@ -43,7 +43,7 @@ export const start = async (zcf, privateArgs) => {
       voteOnParamChanges(ica, params, deadline),
     /**
      * @param {Amount} amount
-     * @param {String} validatorAddress
+     * @param {string} validatorAddress
      * @param {bigint} deadline
      */
     voteOnIcaDelegate: (amount, validatorAddress, deadline) =>
@@ -55,7 +55,7 @@ export const start = async (zcf, privateArgs) => {
       ),
     /**
      * @param {Amount} amount
-     * @param {String} validatorAddress
+     * @param {string} validatorAddress
      * @param {bigint} deadline
      */
     voteOnIcaRedelegate: (amount, validatorAddress, deadline) =>
@@ -67,7 +67,7 @@ export const start = async (zcf, privateArgs) => {
       ),
     /**
      * @param {Amount} amount
-     * @param {String} validatorAddress
+     * @param {string} validatorAddress
      * @param {bigint} deadline
      */
     voteOnIcaUndelegate: (amount, validatorAddress, deadline) =>
@@ -78,7 +78,7 @@ export const start = async (zcf, privateArgs) => {
         deadline,
       ),
     /**
-     * @param {String} proposalId
+     * @param {string} proposalId
      * @param {any} option
      * @param {bigint} deadline
      */

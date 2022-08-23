@@ -85,9 +85,10 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
 
   console.log('Writing to home scratch');
   await Promise.all([
-    E(scratch).set('icaGovernorCreatorFacet', creatorFacet),
-    E(scratch).set('icaGovernorPublicFacet', publicFacet),
-    E(scratch).set('icaGovernorInstance', instance),
+    E(scratch).set('icaGovernorCreatorFacet', g.creatorFacet),
+    E(scratch).set('icaGovernedCreatorFacet', creatorFacet),
+    E(scratch).set('icaGovernedPublicFacet', publicFacet),
+    E(scratch).set('icaGovernedInstance', instance),
   ]);
 
   console.log('Done');

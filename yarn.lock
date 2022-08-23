@@ -201,7 +201,7 @@
   resolved "https://registry.yarnpkg.com/@agoric/eventual-send/-/eventual-send-0.13.10.tgz#3b199afb74bded1099a308d5ae1ac6a7b16c6198"
   integrity sha512-7oiiaeymM4YsRzezJgf0VnsDGfFWvAH0XUR7/psZhgW9C1V0MrRhz6swbVi4miJuigymfLwg2RcUdkr4f7saVA==
 
-"@agoric/governance@^0.7.0":
+"@agoric/governance@*", "@agoric/governance@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@agoric/governance/-/governance-0.7.0.tgz#15ee226b4ee27a3dbf4f9b02c4b5fe74aca1d902"
   integrity sha512-46lMphbXPl47CNwFqgLXFyI9L716dbl0IvdufxixUYv5K308iVydiZhaFOgGgRQY+oRJ7oTHekPDO78GVlPOCw==
@@ -2036,6 +2036,13 @@
     "@endo/zip" "^0.2.27"
     ses "^0.15.17"
 
+"@endo/eslint-plugin@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@endo/eslint-plugin/-/eslint-plugin-0.4.1.tgz#013547f7be329e066d4c45ab695f8007c188e749"
+  integrity sha512-OeU4rBM8c/wFmyJe4ypegwXmH+UOYaK9F+Ju57gCyg2Lmomx14iYS/JI61NZIyP73pW7jnfUJfqlzTCTlS13Xg==
+  dependencies:
+    requireindex "~1.1.0"
+
 "@endo/eventual-send@^0.15.3", "@endo/eventual-send@^0.15.5":
   version "0.15.5"
   resolved "https://registry.yarnpkg.com/@endo/eventual-send/-/eventual-send-0.15.5.tgz#116233ad86beac385604ee8fe12dc0ff4c5c13cd"
@@ -2205,6 +2212,13 @@
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
+
+"@jessie.js/eslint-plugin@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@jessie.js/eslint-plugin/-/eslint-plugin-0.2.0.tgz#47e81ddacf909b68f484955f20f9bf0bf9de6f57"
+  integrity sha512-Llym/BGtFu1pq15U73Rkb+kflTCI8LRxGfCufN+jcIX00m1+nDIhcgqVqmVKrghrSte+UXwDEzb/EO/Zl9K7hA==
+  dependencies:
+    requireindex "~1.1.0"
 
 "@jest/console@^26.6.2":
   version "26.6.2"
@@ -11434,6 +11448,11 @@ requireindex@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.2.0.tgz#3463cdb22ee151902635aa6c9535d4de9c2ef1ef"
   integrity sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==
+
+requireindex@~1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.1.0.tgz#e5404b81557ef75db6e49c5a72004893fe03e162"
+  integrity sha512-LBnkqsDE7BZKvqylbmn7lTIVdpx4K/QCduRATpO5R+wtPmky/a8pN1bO2D6wXppn1497AJF9mNjqAXr6bdl9jg==
 
 requires-port@^1.0.0:
   version "1.0.0"

@@ -31,6 +31,7 @@ const safeJSONParseObject = s => {
  * Create an interchain transaction from a list of msgs
  *
  * @param {[AnyMsg]} msgs JSON transactions to be sent
+ * @param {string} memo
  * @returns {Promise<string>}
  */
 export const makeICS27ICAPacket = async (msgs, memo = '') => {

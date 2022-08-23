@@ -6,9 +6,9 @@ import '@agoric/zoe/exported.js';
 
 const specs = {
   hostChainId: 'theta-testnet-001',
-  hostConnectionId: 'connection-787',
+  hostConnectionId: 'connection-792',
   hostPortId: 'icahost',
-  controllerConnectionId: 'connection-0',
+  controllerConnectionId: 'connection-1',
 };
 
 /**
@@ -24,10 +24,11 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
   const bundle = await bundleSource(pathResolve(`./src/icarus/icarus.js`));
   const installation = await E(zoe).install(bundle);
 
-  const terms = await deeplyFulfilled({
-    networkVat,
-    icarusStorage,
+  const terms = harden({
+    networkVat: await networkVat,
+    icarusStorage: await icarusStorage,
   });
+
   // start instance
   console.log('Starting instance');
   const { instance, publicFacet, creatorFacet } = await E(zoe).startInstance(

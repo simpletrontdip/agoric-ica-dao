@@ -11,6 +11,8 @@
     "_agstate/agoric-servers"
   ],
   "devDependencies": {
+    "@endo/eslint-plugin": "^0.4.1",
+    "@jessie.js/eslint-plugin": "^0.2.0",
     "eslint": "^7.24.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-airbnb-base": "^14.0.0",

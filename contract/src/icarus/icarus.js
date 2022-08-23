@@ -44,7 +44,8 @@ const makeIcarus = async ({
 
   /**
    * Make an ICA port identify this user on host chain
-   * @param {String} ownerId
+   *
+   * @param {string} ownerId
    * @returns
    */
   const makeIcaPort = async ownerId => {
@@ -53,7 +54,7 @@ const makeIcarus = async ({
   };
 
   /**
-   * @param {String} ownerId
+   * @param {string} ownerId
    * @returns {IcarusActions}
    */
   const makeIcarusActions = ownerId => {
@@ -174,7 +175,8 @@ const makeIcarus = async ({
 
   /**
    * Get ICA active channel, re-connect if needed
-   * @param {String} ownerId
+   *
+   * @param {string} ownerId
    * @returns {Promise<Connection>}
    */
   const getIcaActiveChannel = async ownerId => {

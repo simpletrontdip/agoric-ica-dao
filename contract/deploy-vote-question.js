@@ -10,26 +10,41 @@ import '@agoric/zoe/exported.js';
  */
 
 export default async function deploy(homeP, { bundleSource, pathResolve }) {
-  const { zoe, scratch } = await homeP;
+  const { scratch } = await homeP;
 
   console.log('Getting from scratch');
 
-  const [committeeCreatorFacet, questionDetailsP] = await Promise.all([
-    E(scratch).get('committeeCreatorFacet'),
-    E(scratch).get('icaQuestionDetails'),
+  const [questionPublicFacet, voterFacet] = await Promise.all([
+    E(scratch).get('icaQuestionPublicFacet'),
+    E(scratch).get('icaVoterFacet'),
   ]);
 
-  const [invitations, questionDetails] = await Promise.all([
-    E(committeeCreatorFacet).getVoterInvitations(),
-    questionDetailsP,
+  const [isOpen, questionDetails] = await Promise.all([
+    E(questionPublicFacet).isOpen(),
+    E(questionPublicFacet).getDetails(),
   ]);
 
-  const { positions, questionHandle } = questionDetails;
-
-  const voterSeat = E(zoe).offer(invitations[0]);
-  const voterFacet = E(voterSeat).getOfferResult();
-
+  const {
+    positions,
+    questionHandle,
+    quorumRule,
+    closingRule,
+  } = questionDetails;
   const choice = positions[0];
+
+  console.log(
+    'Voting ====>',
+    'isOpen',
+    isOpen,
+    'deadline',
+    closingRule.deadline,
+    'options',
+    positions,
+    'rule',
+    quorumRule,
+  );
+  console.log('===> Choice', choice);
+
   await E(voterFacet).castBallotFor(questionHandle, [choice]);
 
   console.log('Done');
