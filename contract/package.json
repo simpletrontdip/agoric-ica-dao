@@ -39,6 +39,7 @@
     "@endo/base64": "^0.2.27",
     "@endo/eventual-send": "^0.15.3",
     "@endo/far": "*",
+    "@endo/promise-kit": "^0.2.44",
     "cosmjs-types": "agoric-labs/cosmjs-types#Agoric-built",
     "esm": "^3.2.5",
     "long": "^5.2.0",
