@@ -2,6 +2,7 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
+import { question } from './constants.js';
 
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
@@ -9,13 +10,13 @@ import '@agoric/zoe/exported.js';
  * @property {(path: string) => string} pathResolve
  */
 
-export default async function deploy(homeP, { bundleSource, pathResolve }) {
+export default async function deploy(homeP) {
   const { scratch } = await homeP;
 
   console.log('Getting from scratch');
 
   const [questionPublicFacet, voterFacet] = await Promise.all([
-    E(scratch).get('icaQuestionPublicFacet'),
+    E(scratch).get(`publicFacet.${question}`),
     E(scratch).get('icaVoterFacet'),
   ]);
 

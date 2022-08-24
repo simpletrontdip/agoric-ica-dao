@@ -2,6 +2,7 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
+import { icaBridge, icarus } from './constants.js';
 
 const specs = {
   hostChainId: 'theta-testnet-001',
@@ -16,12 +17,10 @@ const specs = {
  * @property {(path: string) => string} pathResolve
  */
 
-export default async function deploy(homeP, { bundleSource, pathResolve }) {
+export default async function deploy(homeP) {
   const { zoe, scratch, networkVat, icarusStorage } = await homeP;
 
-  // install Icarus, later this will be done on-chain
-  const bundle = await bundleSource(pathResolve(`./src/icarus/icarus.js`));
-  const installation = await E(zoe).install(bundle);
+  const installation = await E(scratch).get(`installation.${icarus}`);
 
   const terms = harden({
     networkVat: await networkVat,
@@ -42,10 +41,10 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
 
   console.log('Writing to home scratch');
   await Promise.all([
-    E(scratch).set('icarusPublicFacet', publicFacet),
-    E(scratch).set('icarusCreatorFacet', creatorFacet),
-    E(scratch).set('icarusInstance', instance),
-    E(scratch).set('cosmoshubIcarusBridge', bridge),
+    E(scratch).set(`publicFacet.${icarus}`, publicFacet),
+    E(scratch).set(`creatorFacet.${icarus}`, creatorFacet),
+    E(scratch).set(`publicFacet.${icaBridge}`, bridge),
+    E(scratch).set(`instance.${icarus}`, instance),
   ]);
 
   console.log('Done');

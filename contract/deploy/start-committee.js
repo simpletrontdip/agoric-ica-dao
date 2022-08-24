@@ -2,11 +2,11 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
+import { committee } from './constants.js';
 
 const options = {
-  name: 'ICA sample committee',
+  name: 'ICA committee',
   size: 3,
-  members: [],
 };
 
 /**
@@ -15,26 +15,28 @@ const options = {
  * @property {(path: string) => string} pathResolve
  */
 
-export default async function deploy(homeP, { bundleSource, pathResolve }) {
+export default async function deploy(homeP) {
   const { zoe, scratch } = await homeP;
 
-  const committeeBundle = await bundleSource(
-    pathResolve(`@agoric/governance/src/committee.js`),
-  );
-  const committeeInstall = await E(zoe).install(committeeBundle);
+  const installation = await E(scratch).get(`installation.${committee}`);
+  const terms = harden({
+    committeeName: options.name,
+    committeeSize: options.size,
+  });
+  const issuerKeywordRecord = harden({});
 
   // start instance
   console.log('Starting committee');
   const { creatorFacet, instance } = await E(zoe).startInstance(
-    committeeInstall,
-    {},
-    { committeeName: options.name, committeeSize: options.size },
+    installation,
+    issuerKeywordRecord,
+    terms,
   );
 
   console.log('Writing to home scratch');
   await Promise.all([
-    E(scratch).set('committeeCreatorFacet', creatorFacet),
-    E(scratch).set('committeeInstance', instance),
+    E(scratch).set(`creatorFacet.${committee}`, creatorFacet),
+    E(scratch).set(`instance.${committee}`, instance),
   ]);
 
   console.log('Done');

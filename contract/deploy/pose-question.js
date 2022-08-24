@@ -2,6 +2,7 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
+import { governor, question, voteCounter } from './constants.js';
 
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
@@ -9,18 +10,14 @@ import '@agoric/zoe/exported.js';
  * @property {(path: string) => string} pathResolve
  */
 
-export default async function deploy(homeP, { bundleSource, pathResolve }) {
+export default async function deploy(homeP) {
   const { zoe, scratch, chainTimerService } = await homeP;
 
   console.log('Getting from scratch');
-  const binaryVoteBundle = await bundleSource(
-    pathResolve(`@agoric/governance/src/binaryVoteCounter.js`),
-  );
-  const binaryVoteInstall = await E(zoe).install(binaryVoteBundle);
 
-  const [icaGovernorCreatorFacet, committeeCreatorFacet] = await Promise.all([
-    E(scratch).get('icaGovernorCreatorFacet'),
-    E(scratch).get('committeeCreatorFacet'),
+  const [icaGovernorCreatorFacet, voteCounterInstall] = await Promise.all([
+    E(scratch).get(`creatorFacet.${governor}`),
+    E(scratch).get(`installation.${voteCounter}`),
   ]);
 
   const paramChangeSpec = harden({
@@ -34,17 +31,14 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
   const now = await E(chainTimerService).getCurrentTimestamp();
   const deadline = now + votingDuration;
 
-  const { details, instance, outcomeOfUpdate } = await E(
+  const { instance, outcomeOfUpdate } = await E(
     icaGovernorCreatorFacet,
-  ).voteOnParamChanges(binaryVoteInstall, deadline, paramChangeSpec);
+  ).voteOnParamChanges(voteCounterInstall, deadline, paramChangeSpec);
 
   console.log('Writing question details');
   const publicFacet = E(zoe).getPublicFacet(instance);
 
-  await Promise.all([
-    E(scratch).set('icaQuestionPublicFacet', publicFacet),
-    E(scratch).set('icaQuestionDetails', details),
-  ]);
+  await E(scratch).set(`publicFacet.${question}`);
 
   const voteOutcomeP = E(publicFacet)
     .getOutcome()

@@ -3,6 +3,7 @@ import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
 import { ParamTypes } from '@agoric/governance';
+import { committee, governedIca, governor, icarus } from './constants.js';
 
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
@@ -11,27 +12,24 @@ import { ParamTypes } from '@agoric/governance';
  */
 
 export default async function deploy(homeP, { bundleSource, pathResolve }) {
-  const { zoe, scratch, chainTimerService, board } = await homeP;
-
-  const governorBundle = await bundleSource(
-    pathResolve(`@agoric/governance/src/contractGovernor.js`),
-  );
-  const governorInstall = await E(zoe).install(governorBundle);
+  const { zoe, scratch, chainTimerService } = await homeP;
 
   const icaContractBundle = await bundleSource(
-    pathResolve(`./src/contract.js`),
+    pathResolve(`../src/contract.js`),
   );
   const icaContractInstall = await E(zoe).install(icaContractBundle);
 
   const [
+    governorInstall,
     committeeCreator,
     electorateInstance,
     icarusInstance,
     timer,
   ] = await Promise.all([
-    E(scratch).get('committeeCreatorFacet'),
-    E(scratch).get('committeeInstance'),
-    E(scratch).get('icarusInstance'),
+    E(scratch).get(`installation.${governor}`),
+    E(scratch).get(`creatorFacet.${committee}`),
+    E(scratch).get(`instance.${committee}`),
+    E(scratch).get(`instance.${icarus}`),
     chainTimerService,
   ]);
 
@@ -85,10 +83,10 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
 
   console.log('Writing to home scratch');
   await Promise.all([
-    E(scratch).set('icaGovernorCreatorFacet', g.creatorFacet),
-    E(scratch).set('icaGovernedCreatorFacet', creatorFacet),
-    E(scratch).set('icaGovernedPublicFacet', publicFacet),
-    E(scratch).set('icaGovernedInstance', instance),
+    E(scratch).set(`creatorFacet.${governor}`, g.creatorFacet),
+    E(scratch).set(`creatorFacet.${governedIca}`, creatorFacet),
+    E(scratch).set(`publicFacet.${governedIca}`, publicFacet),
+    E(scratch).set(`instance.${governedIca}`, instance),
   ]);
 
   console.log('Done');
