@@ -4,6 +4,10 @@ import { E } from '@endo/eventual-send';
 import '@agoric/zoe/exported.js';
 import { question } from './constants.js';
 
+const options = {
+  voteChange: true,
+};
+
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
  * @property {(path: string) => { moduleFormat: string, source: string }} bundleSource
@@ -31,7 +35,7 @@ export default async function deploy(homeP) {
     quorumRule,
     closingRule,
   } = questionDetails;
-  const choice = positions[0];
+  const choice = positions[options.voteChange ? 0 : 1];
 
   console.log(
     'Voting ====>',

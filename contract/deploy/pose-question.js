@@ -23,32 +23,35 @@ export default async function deploy(homeP) {
   const paramChangeSpec = harden({
     paramPath: { key: 'governedParams' },
     changes: {
-      IcarusConnection: 'Connection-1',
+      IcarusConnection: 'connection-1',
     },
   });
 
-  const votingDuration = 3n;
+  const votingDuration = 120n;
   const now = await E(chainTimerService).getCurrentTimestamp();
   const deadline = now + votingDuration;
+
+  console.log('Posing question', paramChangeSpec, 'deadline', deadline);
 
   const { instance, outcomeOfUpdate } = await E(
     icaGovernorCreatorFacet,
   ).voteOnParamChanges(voteCounterInstall, deadline, paramChangeSpec);
 
-  console.log('Writing question details');
+  console.log('Writing details');
   const publicFacet = E(zoe).getPublicFacet(instance);
 
-  await E(scratch).set(`publicFacet.${question}`);
+  await E(scratch).set(`publicFacet.${question}`, publicFacet);
 
   const voteOutcomeP = E(publicFacet)
     .getOutcome()
-    .then(outcome => console.log(`vote outcome: ${outcome}`))
-    .catch(e => console.error(`vote failed ${e}`));
+    .then(outcome => console.log('vote outcome:', outcome))
+    .catch(e => console.error('vote failed', e));
 
   const updateOutcomeP = E.when(outcomeOfUpdate, outcome =>
-    console.log(`updated to (${outcome})`),
-  ).catch(e => console.log(`update failed: ${e}`));
+    console.log('==> updated to', outcome),
+  ).catch(e => console.log('update failed', e));
 
+  console.log('==> Waiting for vote outcome');
   await voteOutcomeP;
   await updateOutcomeP;
 
