@@ -2,7 +2,18 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
-import { governor, question, voteCounter } from './constants.js';
+import { governor, apiQuestion, voteCounter } from './constants.js';
+
+const options = {
+  method: 'sendDelegate',
+  params: [
+    {
+      denom: 'uatom',
+      amount: '1000',
+      validatorAddress: 'cosmosvaloper10v6wvdenee8r9l6wlsphcgur2ltl8ztkfrvj9a',
+    },
+  ],
+};
 
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
@@ -20,27 +31,35 @@ export default async function deploy(homeP) {
     E(scratch).get(`installation.${voteCounter}`),
   ]);
 
-  const paramChangeSpec = harden({
-    paramPath: { key: 'governedParams' },
-    changes: {
-      IcarusConnection: 'connection-1',
-    },
-  });
-
   const votingDuration = 120n;
   const now = await E(chainTimerService).getCurrentTimestamp();
   const deadline = now + votingDuration;
 
-  console.log('Posing question', paramChangeSpec, 'deadline', deadline);
+  const apiMethodName = options.method;
+  const apiCallParams = options.params;
+
+  console.log(
+    'Posing question',
+    apiMethodName,
+    'params',
+    apiCallParams,
+    'deadline',
+    deadline,
+  );
 
   const { instance, outcomeOfUpdate } = await E(
     icaGovernorCreatorFacet,
-  ).voteOnParamChanges(voteCounterInstall, deadline, paramChangeSpec);
+  ).voteOnApiInvocation(
+    options.method,
+    options.params,
+    voteCounterInstall,
+    deadline,
+  );
 
   console.log('Writing details');
   const publicFacet = E(zoe).getPublicFacet(instance);
 
-  await E(scratch).set(`publicFacet.${question}`, publicFacet);
+  await E(scratch).set(`publicFacet.${apiQuestion}`, publicFacet);
 
   const voteOutcomeP = E(publicFacet)
     .getOutcome()

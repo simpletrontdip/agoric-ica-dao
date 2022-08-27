@@ -4,4 +4,5 @@ export const governor = 'governor';
 export const voteCounter = 'voteCounter';
 export const governedIca = 'governedIca';
 export const icaBridge = 'bridge';
-export const question = 'question';
+export const paramQuestion = 'question';
+export const apiQuestion = 'apiQuestion';
