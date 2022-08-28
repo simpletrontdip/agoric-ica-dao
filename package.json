@@ -5,9 +5,7 @@
   "useWorkspaces": true,
   "main": "index.js",
   "workspaces": [
-    "api",
     "contract",
-    "ui",
     "_agstate/agoric-servers"
   ],
   "devDependencies": {
