@@ -12,16 +12,16 @@ import '@agoric/zoe/exported.js';
  * @property {(path: string) => string} pathResolve
  */
 
-export default async function deploy(
-  homeP,
-  // { bundleSource, pathResolve },
-) {
+export default async function deploy(homeP) {
   const { scratch } = await homeP;
 
   console.log('Getting actions from home scratch');
   const actions = await E(scratch).get('cosmoshubIcaActions');
 
   const icaAddress = await E(actions).getAddress();
+  const isReady = await E(actions).isReady();
+
+  console.log('Current channel status', isReady, icaAddress);
 
   const sendMsg = MsgSend.fromPartial({
     amount: [{ denom: 'uatom', amount: '1000' }],

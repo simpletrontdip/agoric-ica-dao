@@ -15,7 +15,7 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
   const { zoe, scratch, chainTimerService } = await homeP;
 
   const icaContractBundle = await bundleSource(
-    pathResolve(`../src/contract.js`),
+    pathResolve(`../src/ica-dao.js`),
   );
   const icaContractInstall = await E(zoe).install(icaContractBundle);
 
