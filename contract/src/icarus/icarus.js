@@ -10,6 +10,12 @@ import { ICS27ICAProtocol } from './ics27.js';
 const DEFAULT_ICA_PROTOCOL = ICS27ICAProtocol;
 const DEFAULT_ICA_PORT_PREFIX = 'icarus';
 
+const CONNECTION_ERROR_REGEXS = [
+  /packet timed out/i,
+  /client is not active/i,
+  /invalid channel state/i,
+];
+
 const makeIdGenerator = (prefix = 'id-') => {
   let nextId = 0;
   return () => {
@@ -103,12 +109,13 @@ const makeIcarus = async ({
     hostConnectionId,
     controllerConnectionId,
     hostPortId,
+    address = '',
   }) => {
     const version = JSON.stringify({
       version: 'ics27-1',
       hostConnectionId,
       controllerConnectionId,
-      address: '',
+      address,
       encoding: 'proto3',
       txType: 'sdk_multi_msg',
     });
@@ -141,7 +148,7 @@ const makeIcarus = async ({
       return openIcaChannel({
         controllerConnectionId,
         hostConnectionId,
-        // only allow overriding connection ids, in case of reconnecting
+        // only allow overriding connection ids, address in case of reconnecting
         ...overrides,
         // these params can not be changed
         hostPortId,
@@ -153,6 +160,21 @@ const makeIcarus = async ({
           isConnecting: false,
         });
       });
+    };
+
+    const handleConnectionError = error => {
+      for (errorRegex of CONNECTION_ERROR_REGEXS) {
+        if (errorRegex.test(error)) {
+          // mark as not ready
+          updateState({
+            isReady: false,
+          });
+          break;
+        }
+      }
+
+      // rethrow error
+      throw error;
     };
 
     // wait for first attempt
@@ -174,14 +196,19 @@ const makeIcarus = async ({
           const icaTxPackage = await E(icaProtocol).makeICAPacket(msgs);
           return E(conn)
             .send(icaTxPackage)
-            .then(ack => E(icaProtocol).assertICAPacketAck(ack));
+            .then(ack => E(icaProtocol).assertICAPacketAck(ack))
+            .catch(handleConnectionError);
         },
         async reconnect(overrides) {
           if (getState().isConnecting) {
             throw Error('Another connecting attempt is in progress');
           }
           // update the connection
-          conn = await doConnect(overrides);
+          conn = await doConnect({
+            ...overrides,
+            // reconnect with negotiated address
+            address: getState().icaAddr,
+          });
         },
         async close() {
           return E(conn).close();
@@ -206,7 +233,6 @@ const makeIcarus = async ({
         hostPortId = 'icahost',
         controllerConnectionId,
       }) {
-        // TODO check `hostChainId` duplications
         assert(hostPortId, X`Host port id is required, got ${hostPortId}`);
         assert(
           hostConnectionId,
