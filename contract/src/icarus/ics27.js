@@ -5,8 +5,6 @@ import { encodeBase64 } from '@endo/base64';
 
 import { CosmosTx, Any, Type } from './codec.js';
 
-import '@agoric/pegasus/exported.js';
-
 // As specified in ICS27, the success result is a base64-encoded '\0x1' byte.
 const ICS27_ICA_SUCCESS_RESULT = 'AQ==';
 
@@ -30,7 +28,7 @@ const safeJSONParseObject = s => {
 /**
  * Create an interchain transaction from a list of msgs
  *
- * @param {[AnyMsg]} msgs JSON transactions to be sent
+ * @param {[import('./types.js').AnyMsg]} msgs JSON transactions to be sent
  * @param {string} memo
  * @returns {Promise<string>}
  */
@@ -58,7 +56,7 @@ export const makeICS27ICAPacket = async (msgs, memo = '') => {
   const cosmosTxBytes = CosmosTx.encode(comsosTx).finish();
 
   // Generate the ics27-1 packet.
-  /** @type {ICS27ICAPacket} */
+  /** @type {import('./types.js').ICS27ICAPacket} */
   const ics27 = {
     type: Type.TYPE_EXECUTE_TX,
     data: encodeBase64(cosmosTxBytes),
@@ -90,7 +88,7 @@ export const assertICS27ICAPacketAck = async ack => {
   return data || responses;
 };
 
-/** @type {ICAProtocol} */
+/** @type {import('./types.js').ICAProtocol} */
 export const ICS27ICAProtocol = Far('ics27-1 ICA protocol', {
   makeICAPacket: makeICS27ICAPacket,
   assertICAPacketAck: assertICS27ICAPacketAck,

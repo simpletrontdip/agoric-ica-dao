@@ -37,6 +37,9 @@ const parsePortId = localAddr => {
   return pairs.find(([key]) => key === 'ibc-port')[1];
 };
 
+/**
+ * @returns {import('./types').Icarus}
+ */
 const makeIcarus = async ({
   networkVat,
   icaProtocol = DEFAULT_ICA_PROTOCOL,
@@ -182,6 +185,9 @@ const makeIcarus = async ({
 
     return {
       subscription,
+      /**
+       * @type {import('./types').IcarusConnectionActions}
+       */
       icaActions: Far('icarusConnectionActions', {
         state() {
           return getState();
@@ -210,9 +216,6 @@ const makeIcarus = async ({
             address: getState().icaAddr,
           });
         },
-        async close() {
-          return E(conn).close();
-        },
       }),
     };
   };
@@ -221,6 +224,9 @@ const makeIcarus = async ({
     const localAddr = await E(icaPort).getLocalAddress();
     const portId = parsePortId(localAddr);
 
+    /**
+     * @type {import('./types.js').IcarusControllerActions}
+     */
     return Far('icarusControllerActions', {
       async getPort() {
         return icaPort;
@@ -259,7 +265,7 @@ const makeIcarus = async ({
      * Register a port on controller chain, return an IcarusControllerActions
      * (Which can be used to register multiple account on multiple host chains)
      *
-     * */
+     */
     async newController() {
       // XXX should we try to bindport until success
       const portId = nextIcaPortId();
