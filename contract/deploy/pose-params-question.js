@@ -23,7 +23,11 @@ export default async function deploy(homeP) {
   const paramChangeSpec = harden({
     paramPath: { key: 'governedParams' },
     changes: {
-      IcarusConnection: 'connection-1',
+      IcarusConnectionParams: {
+        hostPortId: 'icahost',
+        controllerConnectionId: 'connection-1',
+        hostConnectionId: 'connection-821',
+      },
     },
   });
 

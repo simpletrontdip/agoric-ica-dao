@@ -16,7 +16,12 @@ const options = {
  */
 
 export default async function deploy(homeP) {
-  const { zoe, scratch } = await homeP;
+  const { zoe, scratch, board, personalStorage } = await homeP;
+
+  const storageNode = await E(personalStorage).makeChildNode(
+    options.name.replace(/[ ,]/g, '_'),
+  );
+  const marshaller = await E(board).getReadonlyMarshaller();
 
   const installation = await E(scratch).get(`installation.${committee}`);
   const terms = harden({
@@ -24,6 +29,10 @@ export default async function deploy(homeP) {
     committeeSize: options.size,
   });
   const issuerKeywordRecord = harden({});
+  const privateArgs = harden({
+    storageNode,
+    marshaller,
+  });
 
   // start instance
   console.log('Starting committee');
@@ -31,6 +40,7 @@ export default async function deploy(homeP) {
     installation,
     issuerKeywordRecord,
     terms,
+    privateArgs,
   );
 
   console.log('Writing to home scratch');

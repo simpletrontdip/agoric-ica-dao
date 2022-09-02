@@ -38,7 +38,7 @@ const parsePortId = localAddr => {
 };
 
 /**
- * @returns {import('./types').Icarus}
+ * @returns {Promise<import('./types').Icarus>}
  */
 const makeIcarus = async ({
   networkVat,
@@ -286,8 +286,10 @@ const makeIcarus = async ({
   };
 };
 
-const start = async zcf => {
-  const { networkVat } = zcf.getTerms();
+const start = async (_zcf, privateArgs) => {
+  const { networkVat } = privateArgs;
+  assert(networkVat, `Missing "networkVat"`);
+
   const icarus = await makeIcarus({ networkVat });
 
   return {

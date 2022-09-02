@@ -5,7 +5,9 @@ import '@agoric/zoe/exported.js';
 import { committee } from './constants.js';
 
 const options = {
-  members: ['agoric1p5ktkzl84q87q2pv40adswrzypffy3c67uhkuk'],
+  members: [
+    'agoric162r2m38lhcqjnyxkl37nyk5y7xeds77cuyl6sy',
+  ],
   waitForDeposit: true,
 };
 
@@ -32,7 +34,7 @@ export default async function deploy(homeP) {
     console.log('Sending to', addr);
     const depositFacet = E(namesByAddress).lookup(addr, 'depositFacet');
 
-    const voterInvitation = await invitations[idx + 2];
+    const voterInvitation = await invitations[idx];
     // receive payments
     return E(depositFacet).receive(voterInvitation);
   });

@@ -4,16 +4,21 @@ import { E } from '@endo/eventual-send';
 import '@agoric/zoe/exported.js';
 import { governor, apiQuestion, voteCounter } from './constants.js';
 
-const options = {
-  method: 'sendDelegate',
-  params: [
-    {
-      denom: 'uatom',
-      amount: '1000',
-      validatorAddress: 'cosmosvaloper10v6wvdenee8r9l6wlsphcgur2ltl8ztkfrvj9a',
-    },
-  ],
+const ALL = {
+  delegate: {
+    method: 'sendDelegate',
+    params: [
+      {
+        denom: 'uatom',
+        amount: '1000',
+        validatorAddress:
+          'cosmosvaloper10v6wvdenee8r9l6wlsphcgur2ltl8ztkfrvj9a',
+      },
+    ],
+  },
 };
+
+const options = ALL.register;
 
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us

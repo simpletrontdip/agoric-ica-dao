@@ -40,7 +40,7 @@ const start = async (zcf, privateArgs) => {
     icaActions = actions;
   };
 
-  const getUpdatedIcaController = async () => {
+  const getUpdatedController = async () => {
     const zoe = zcf.getZoeService();
     const icarusInstance = params.getIcarusInstance();
 
@@ -74,16 +74,14 @@ const start = async (zcf, privateArgs) => {
     }
 
     isRegistered = true;
-    const controller = await getUpdatedIcaController();
+    const controller = await getUpdatedController();
     const {
       hostPortId,
       hostConnectionId,
       controllerConnectionId,
     } = params.getIcarusConnectionParams();
 
-    const { icaActions: actions, subscription } = await E(
-      controller,
-    ).makeRemoteAccount({
+    const { icaActions: actions } = await E(controller).makeRemoteAccount({
       hostPortId,
       hostConnectionId,
       controllerConnectionId,
@@ -91,22 +89,6 @@ const start = async (zcf, privateArgs) => {
 
     // update the ref
     setIcaActions(actions);
-
-    // observe the change
-    observeIteration(subscription, {
-      updateState(connectionState) {
-        const { isReady, icaAddr, localAddr, remoteAddr } = connectionState;
-        console.log('ICA state changed', {
-          isReady,
-          icaAddr,
-          localAddr,
-          remoteAddr,
-        });
-      },
-      fail(error) {
-        console.error('Error', error);
-      },
-    });
   };
 
   const reconnectAccount = async () => {
@@ -126,6 +108,8 @@ const start = async (zcf, privateArgs) => {
   };
 
   const sendIcaTxMsg = (type, args) => {
+    assert(isRegistered, 'Not registered, please `registerAccount` first');
+
     const buildFn = supportedTxMsgs[type];
     assert(buildFn, `Msg type ${type} is not supported`);
 
@@ -152,7 +136,7 @@ const start = async (zcf, privateArgs) => {
   };
 
   const publicApis = {
-    isIcaReady() {
+    isReady() {
       return E(icaActions).isReady();
     },
     getAddress() {

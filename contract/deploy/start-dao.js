@@ -49,9 +49,13 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
         type: ParamTypes.INSTANCE,
         value: icarusInstance,
       },
-      IcarusConnection: {
-        type: ParamTypes.STRING,
-        value: 'connection-0',
+      IcarusConnectionParams: {
+        type: ParamTypes.PASSABLE_RECORD,
+        value: {
+          hostPortId: 'icahost',
+          controllerConnectionId: 'connection-1',
+          hostConnectionId: 'connection-821',
+        },
       },
     },
   });

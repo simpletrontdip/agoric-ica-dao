@@ -16,7 +16,7 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
   const bundle = await bundleSource(pathResolve(`./src/icarus/icarus.js`));
   const installation = await E(zoe).install(bundle);
 
-  const terms = harden({
+  const privateArgs = harden({
     networkVat: await networkVat,
   });
 
@@ -25,7 +25,8 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
   const { instance, publicFacet } = await E(zoe).startInstance(
     installation,
     undefined,
-    terms,
+    {},
+    privateArgs,
   );
 
   console.log('Writing to home scratch');
