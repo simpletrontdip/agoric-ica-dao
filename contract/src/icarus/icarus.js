@@ -166,15 +166,14 @@ const makeIcarus = async ({
     };
 
     const handleConnectionError = error => {
-      for (errorRegex of CONNECTION_ERROR_REGEXS) {
+      CONNECTION_ERROR_REGEXS.forEach(errorRegex => {
         if (errorRegex.test(error)) {
           // mark as not ready
           updateState({
             isReady: false,
           });
-          break;
         }
-      }
+      });
 
       // rethrow error
       throw error;

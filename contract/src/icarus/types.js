@@ -39,7 +39,7 @@ import '@agoric/swingset-vat/src/vats/network/types.js';
  * @property {() => object} state: get interchain account state
  * @property {() => boolean} isReady: is ready to send tx message
  * @property {() => string} geAddress: get host chain account address
- * @property {(params: ReconnectParams) => void} reconnect: reconnect, for case connection timeout or underlying error
+ * @property {(params: ReconnectParams) => Promise<void>} reconnect: reconnect, for case connection timeout or underlying error
  * @property {(msgs: [AnyMsg]) => Promise<any>} sendTxMsgs: send transaction to host chain
  */
 
@@ -50,9 +50,9 @@ import '@agoric/swingset-vat/src/vats/network/types.js';
  *
  *
  * @typedef {object} IcarusControllerActions
- * @property {() => Port} getPort: get assigned Port of account controller
- * @property {() => string} getPortId: get assigned Port Id of account controller
- * @property {(params: ConnectParams) => RegisterAccountResult} makeRemoteAccount: register account on remote chain
+ * @property {() => Promise<Port>} getPort: get assigned Port of account controller
+ * @property {() => Promise<string>} getPortId: get assigned Port Id of account controller
+ * @property {(params: ConnectParams) => Promise<RegisterAccountResult>} makeRemoteAccount: register account on remote chain
  */
 
 /**
