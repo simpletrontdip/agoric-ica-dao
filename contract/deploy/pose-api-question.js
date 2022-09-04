@@ -2,23 +2,33 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
-import { governor, apiQuestion, voteCounter } from './constants.js';
+import {
+  governor,
+  apiQuestion,
+  voteCounter,
+  governedIca,
+} from './constants.js';
 
 const ALL = {
   delegate: {
-    method: 'sendDelegate',
-    params: [
-      {
-        denom: 'uatom',
-        amount: '1000',
-        validatorAddress:
-          'cosmosvaloper10v6wvdenee8r9l6wlsphcgur2ltl8ztkfrvj9a',
-      },
-    ],
+    method: 'delegate',
+    params(delegatorAddress) {
+      return [
+        {
+          amount: {
+            denom: 'uatom',
+            amount: '1000',
+          },
+          delegatorAddress,
+          validatorAddress:
+            'cosmosvaloper10v6wvdenee8r9l6wlsphcgur2ltl8ztkfrvj9a',
+        },
+      ];
+    },
   },
 };
 
-const options = ALL.register;
+const options = ALL.delegate;
 
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
@@ -31,21 +41,28 @@ export default async function deploy(homeP) {
 
   console.log('Getting from scratch');
 
-  const [icaGovernorCreatorFacet, voteCounterInstall] = await Promise.all([
+  const [
+    icaGovernorCreatorFacet,
+    voteCounterInstall,
+    icaDaoPublicFacet,
+  ] = await Promise.all([
     E(scratch).get(`creatorFacet.${governor}`),
     E(scratch).get(`installation.${voteCounter}`),
+    E(scratch).get(`publicFacet.${governedIca}`),
   ]);
 
   const votingDuration = 120n;
   const now = await E(chainTimerService).getCurrentTimestamp();
   const deadline = now + votingDuration;
 
-  const apiMethodName = options.method;
-  const apiCallParams = options.params;
+  const address = await E(icaDaoPublicFacet).getAddress();
+
+  const apiCallMethod = options.method;
+  const apiCallParams = options.params(address);
 
   console.log(
     'Posing question',
-    apiMethodName,
+    apiCallMethod,
     'params',
     apiCallParams,
     'deadline',
@@ -55,8 +72,8 @@ export default async function deploy(homeP) {
   const { instance, outcomeOfUpdate } = await E(
     icaGovernorCreatorFacet,
   ).voteOnApiInvocation(
-    options.method,
-    options.params,
+    apiCallMethod,
+    apiCallParams,
     voteCounterInstall,
     deadline,
   );
@@ -72,7 +89,7 @@ export default async function deploy(homeP) {
     .catch(e => console.error('vote failed', e));
 
   const updateOutcomeP = E.when(outcomeOfUpdate, outcome =>
-    console.log('==> updated to', outcome),
+    console.log('==> Call result', outcome),
   ).catch(e => console.log('update failed', e));
 
   console.log('==> Waiting for vote outcome');

@@ -18,11 +18,11 @@ const options = {
 
 export default async function deploy(homeP) {
   const { zoe, wallet, scratch } = await homeP;
-  const existing = await E(scratch).get('icaVoterFacet');
+  const existing = await E(scratch).get('icaVoterFacet2');
 
   if (existing && !options.overrideExisting) {
     console.log(
-      'icaVoterFacet existed, you need to update `override` flag to proceed',
+      'icaVoterFacet2 existed, you need to update `override` flag to proceed',
       '\nDone, do nothing',
     );
     return;
@@ -45,8 +45,8 @@ export default async function deploy(homeP) {
   const voterSeat = E(zoe).offer(voterInvitation);
   const voterFacet = E(voterSeat).getOfferResult();
 
-  console.log('Writing `icaVoterFacet` to scratch');
-  await E(scratch).set('icaVoterFacet', voterFacet);
+  console.log('Writing `icaVoterFacet2` to scratch');
+  await E(scratch).set('icaVoterFacet2', voterFacet);
 
   console.log('Done');
 }

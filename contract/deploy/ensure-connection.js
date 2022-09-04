@@ -5,7 +5,7 @@ import '@agoric/zoe/exported.js';
 import { governedIca } from './constants.js';
 
 const options = {
-  isReconnect: false,
+  isReconnect: true,
 };
 
 /**
