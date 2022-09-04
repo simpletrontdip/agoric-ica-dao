@@ -53,8 +53,8 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
         type: ParamTypes.PASSABLE_RECORD,
         value: {
           hostPortId: 'icahost',
-          controllerConnectionId: 'connection-1',
-          hostConnectionId: 'connection-821',
+          controllerConnectionId: 'connection-0',
+          hostConnectionId: 'connection-828',
         },
       },
     },

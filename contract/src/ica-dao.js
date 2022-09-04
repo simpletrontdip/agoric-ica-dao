@@ -142,6 +142,10 @@ const start = async (zcf, privateArgs) => {
     getAddress() {
       return E(icaActions).getAddress();
     },
+    async getPortId() {
+      const controller = await getUpdatedController()
+      return E(controller).getPortId()
+    }
   };
 
   const creatorApis = {

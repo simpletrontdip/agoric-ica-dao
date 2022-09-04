@@ -25,6 +25,9 @@ export default async function deploy(homeP) {
   const params = await E(icaDaoPublicFacet).getGovernedParams();
   const connectionParams = params.IcarusConnectionParams.value;
 
+  const portId = await E(icaDaoPublicFacet).getPortId()
+  console.log('Port Id', portId)
+
   console.log('Connection params', connectionParams);
 
   if (options.isReconnect) {
