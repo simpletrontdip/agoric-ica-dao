@@ -4,13 +4,6 @@ import { E } from '@endo/eventual-send';
 import '@agoric/zoe/exported.js';
 import { icarus } from './constants.js';
 
-const specs = {
-  hostChainId: 'theta-testnet-001',
-  hostConnectionId: 'connection-792',
-  hostPortId: 'icahost',
-  controllerConnectionId: 'connection-1',
-};
-
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
  * @property {(path: string) => { moduleFormat: string, source: string }} bundleSource

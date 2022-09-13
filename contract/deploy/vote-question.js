@@ -2,7 +2,7 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
-import { paramQuestion, apiQuestion } from './constants.js';
+import { registerQuestion, apiQuestion } from './constants.js';
 
 const options = {
   voteChange: true,
@@ -17,7 +17,7 @@ const options = {
 
 export default async function deploy(homeP) {
   const { scratch } = await homeP;
-  const question = options.voteApiQuestion ? apiQuestion : paramQuestion;
+  const question = options.voteApiQuestion ? apiQuestion : registerQuestion;
 
   console.log('Getting from scratch');
 

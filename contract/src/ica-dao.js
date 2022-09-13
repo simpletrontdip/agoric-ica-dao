@@ -1,6 +1,5 @@
 import { E } from '@endo/eventual-send';
 import { handleParamGovernance, ParamTypes } from '@agoric/governance';
-import { observeIteration } from '@agoric/notifier';
 
 import {
   buildClaimRewardMsg,
@@ -11,7 +10,6 @@ import {
 } from './encoder';
 
 const ICARUS_INSTANCE = 'IcarusInstance';
-const ICARUS_CONNECTION_PARAMS = 'IcarusConnectionParams';
 
 const start = async (zcf, privateArgs) => {
   const {
@@ -20,7 +18,6 @@ const start = async (zcf, privateArgs) => {
     params,
   } = await handleParamGovernance(zcf, privateArgs.initialPoserInvitation, {
     [ICARUS_INSTANCE]: ParamTypes.INSTANCE,
-    [ICARUS_CONNECTION_PARAMS]: ParamTypes.PASSABLE_RECORD,
   });
 
   const supportedTxMsgs = {
@@ -68,18 +65,17 @@ const start = async (zcf, privateArgs) => {
     return icaController;
   };
 
-  const registerAccount = async () => {
+  const registerAccount = async ({
+    hostPortId,
+    hostConnectionId,
+    controllerConnectionId,
+  }) => {
     if (isRegistered) {
       throw Error('Already registered');
     }
 
     isRegistered = true;
     const controller = await getUpdatedController();
-    const {
-      hostPortId,
-      hostConnectionId,
-      controllerConnectionId,
-    } = params.getIcarusConnectionParams();
 
     const { icaActions: actions } = await E(controller).makeRemoteAccount({
       hostPortId,
@@ -96,15 +92,7 @@ const start = async (zcf, privateArgs) => {
       throw Error('Not registered');
     }
 
-    const {
-      hostConnectionId,
-      controllerConnectionId,
-    } = params.getIcarusConnectionParams();
-
-    return E(icaActions).reconnect({
-      hostConnectionId,
-      controllerConnectionId,
-    });
+    return E(icaActions).reconnect();
   };
 
   const sendIcaTxMsg = (type, args) => {
@@ -133,6 +121,7 @@ const start = async (zcf, privateArgs) => {
     async sendRawTxMsg(msgs) {
       return E(icaActions).sendTxMsgs(msgs);
     },
+    registerAccount,
   };
 
   const publicApis = {
@@ -143,16 +132,15 @@ const start = async (zcf, privateArgs) => {
       return E(icaActions).getAddress();
     },
     async getPortId() {
-      const controller = await getUpdatedController()
-      return E(controller).getPortId()
-    }
+      const controller = await getUpdatedController();
+      return E(controller).getPortId();
+    },
   };
 
   const creatorApis = {
     async claimReward(args) {
       return sendIcaTxMsg('claimReward', args);
     },
-    registerAccount,
     reconnectAccount,
   };
 

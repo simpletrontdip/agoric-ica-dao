@@ -3,5 +3,5 @@ export const committee = 'committee';
 export const governor = 'governor';
 export const voteCounter = 'voteCounter';
 export const governedIca = 'governedIca';
-export const paramQuestion = 'question';
+export const registerQuestion = 'registerQuestion';
 export const apiQuestion = 'apiQuestion';

@@ -2,7 +2,7 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
-import { governor, paramQuestion, voteCounter } from './constants.js';
+import { governor, registerQuestion, voteCounter } from './constants.js';
 
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
@@ -20,31 +20,38 @@ export default async function deploy(homeP) {
     E(scratch).get(`installation.${voteCounter}`),
   ]);
 
-  const paramChangeSpec = harden({
-    paramPath: { key: 'governedParams' },
-    changes: {
-      IcarusConnectionParams: {
-        hostPortId: 'icahost',
-        controllerConnectionId: 'connection-1',
-        hostConnectionId: 'connection-821',
-      },
+  const connectionParams = harden([
+    {
+      hostPortId: 'icahost',
+      controllerConnectionId: 'connection-1',
+      hostConnectionId: 'connection-853',
     },
-  });
+  ]);
 
   const votingDuration = 120n;
   const now = await E(chainTimerService).getCurrentTimestamp();
   const deadline = now + votingDuration;
 
-  console.log('Posing question', paramChangeSpec, 'deadline', deadline);
+  console.log(
+    'Posing registerAccount question',
+    connectionParams,
+    'deadline',
+    deadline,
+  );
 
   const { instance, outcomeOfUpdate } = await E(
     icaGovernorCreatorFacet,
-  ).voteOnParamChanges(voteCounterInstall, deadline, paramChangeSpec);
+  ).voteOnApiInvocation(
+    'registerAccount',
+    connectionParams,
+    voteCounterInstall,
+    deadline,
+  );
 
   console.log('Writing details');
   const publicFacet = E(zoe).getPublicFacet(instance);
 
-  await E(scratch).set(`publicFacet.${paramQuestion}`, publicFacet);
+  await E(scratch).set(`publicFacet.${registerQuestion}`, publicFacet);
 
   const voteOutcomeP = E(publicFacet)
     .getOutcome()
@@ -52,8 +59,8 @@ export default async function deploy(homeP) {
     .catch(e => console.error('vote failed', e));
 
   const updateOutcomeP = E.when(outcomeOfUpdate, outcome =>
-    console.log('==> updated to', outcome),
-  ).catch(e => console.log('update failed', e));
+    console.log('account register succeeded', outcome),
+  ).catch(e => console.log('account register failed', e));
 
   console.log('==> Waiting for vote outcome');
   await voteOutcomeP;

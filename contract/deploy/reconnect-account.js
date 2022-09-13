@@ -25,18 +25,13 @@ export default async function deploy(homeP) {
   const params = await E(icaDaoPublicFacet).getGovernedParams();
   const connectionParams = params.IcarusConnectionParams.value;
 
-  const portId = await E(icaDaoPublicFacet).getPortId()
-  console.log('Port Id', portId)
+  const portId = await E(icaDaoPublicFacet).getPortId();
+  console.log('Port Id', portId);
 
   console.log('Connection params', connectionParams);
 
-  if (options.isReconnect) {
-    console.log('Reconnecting remote account');
-    await E(icaDaoCreatorFacet).reconnectAccount();
-  } else {
-    console.log('Registering remote account');
-    await E(icaDaoCreatorFacet).registerAccount();
-  }
+  console.log('Reconnecting remote account');
+  await E(icaDaoCreatorFacet).reconnectAccount();
 
   console.log('Done');
 }

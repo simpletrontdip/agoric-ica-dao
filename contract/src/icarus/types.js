@@ -38,7 +38,7 @@ import '@agoric/swingset-vat/src/vats/network/types.js';
  * @typedef {object} IcarusConnectionActions
  * @property {() => object} state: get interchain account state
  * @property {() => boolean} isReady: is ready to send tx message
- * @property {() => string} geAddress: get host chain account address
+ * @property {() => string} getAddress: get host chain account address
  * @property {(params: ReconnectParams) => Promise<void>} reconnect: reconnect, for case connection timeout or underlying error
  * @property {(msgs: [AnyMsg]) => Promise<any>} sendTxMsgs: send transaction to host chain
  */

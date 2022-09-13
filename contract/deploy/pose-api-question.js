@@ -26,6 +26,22 @@ const ALL = {
       ];
     },
   },
+  undelegate: {
+    method: 'undelegate',
+    params(delegatorAddress) {
+      return [
+        {
+          amount: {
+            denom: 'uatom',
+            amount: '1000',
+          },
+          delegatorAddress,
+          validatorAddress:
+            'cosmosvaloper10v6wvdenee8r9l6wlsphcgur2ltl8ztkfrvj9a',
+        },
+      ];
+    },
+  },
 };
 
 const options = ALL.delegate;

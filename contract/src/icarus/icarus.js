@@ -56,7 +56,7 @@ const makeIcarus = async ({
     let state = {
       isReady: false,
       isConnecting: false,
-      icaAddress: null,
+      icaAddr: null,
     };
 
     const updateState = newAttrs => {
@@ -143,7 +143,7 @@ const makeIcarus = async ({
       handler,
     } = makeIcaConnectionKit();
 
-    const doConnect = async overrides => {
+    const doConnect = async () => {
       updateState({
         isConnecting: true,
       });
@@ -151,9 +151,6 @@ const makeIcarus = async ({
       return openIcaChannel({
         controllerConnectionId,
         hostConnectionId,
-        // only allow overriding connection ids, address in case of reconnecting
-        ...overrides,
-        // these params can not be changed
         hostPortId,
         icaPort,
         handler,
@@ -204,21 +201,20 @@ const makeIcarus = async ({
             .then(ack => E(icaProtocol).assertICAPacketAck(ack))
             .catch(handleConnectionError);
         },
-        async reconnect(overrides) {
+        async reconnect() {
           if (getState().isConnecting) {
             throw Error('Another connecting attempt is in progress');
           }
           // update the connection
-          conn = await doConnect({
-            ...overrides,
-            // reconnect with negotiated address
-            address: getState().icaAddr,
-          });
+          conn = await doConnect();
         },
       }),
     };
   };
 
+  /**
+   * @param {Port} icaPort 
+   */
   const buildControllerActions = async icaPort => {
     const localAddr = await E(icaPort).getLocalAddress();
     const portId = parsePortId(localAddr);
