@@ -23,8 +23,8 @@ export default async function deploy(homeP) {
   const connectionParams = harden([
     {
       hostPortId: 'icahost',
-      controllerConnectionId: 'connection-1',
-      hostConnectionId: 'connection-853',
+      controllerConnectionId: 'connection-0',
+      hostConnectionId: 'connection-854',
     },
   ]);
 

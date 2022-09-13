@@ -213,7 +213,7 @@ const makeIcarus = async ({
   };
 
   /**
-   * @param {Port} icaPort 
+   * @param {Port} icaPort
    */
   const buildControllerActions = async icaPort => {
     const localAddr = await E(icaPort).getLocalAddress();
