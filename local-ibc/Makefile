@@ -1,4 +1,4 @@
-CHAIN_AG=sim-agoric-6
+CHAIN_AG=sim-agoric-7
 CHAIN_COSMOS=theta-testnet-001
 
 HERMES=docker run --rm -vhermes-home:/home/hermes:z -v$$PWD:/config hermes:v1.0.0-rc.0 --config /config/hermes.config

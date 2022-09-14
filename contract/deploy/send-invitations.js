@@ -6,8 +6,8 @@ import { committee } from './constants.js';
 
 const options = {
   members: [
-    'agoric1hx2z2yccj6u4weugpyjjl77v3r04zllgfqpl4r',
-    'agoric1hx2z2yccj6u4weugpyjjl77v3r04zllgfqpl4r',
+    'agoric1dsszhufzlcnysy8cw92fw0x69sj00crzn5fewj',
+    'agoric1dsszhufzlcnysy8cw92fw0x69sj00crzn5fewj',
   ],
   waitForDeposit: true,
 };

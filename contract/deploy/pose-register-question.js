@@ -24,7 +24,7 @@ export default async function deploy(homeP) {
     {
       hostPortId: 'icahost',
       controllerConnectionId: 'connection-0',
-      hostConnectionId: 'connection-854',
+      hostConnectionId: 'connection-855',
     },
   ]);
 
