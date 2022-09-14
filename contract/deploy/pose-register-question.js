@@ -2,7 +2,12 @@
 import { E } from '@endo/eventual-send';
 
 import '@agoric/zoe/exported.js';
-import { governor, registerQuestion, voteCounter } from './constants.js';
+import {
+  governor,
+  registerQuestion,
+  voteCounter,
+  governedIca,
+} from './constants.js';
 
 /**
  * @typedef {Object} DeployPowers The special powers that agoric deploy gives us
@@ -65,6 +70,14 @@ export default async function deploy(homeP) {
   console.log('==> Waiting for vote outcome');
   await voteOutcomeP;
   await updateOutcomeP;
+
+  const icaDaoPublicFacet = await E(scratch).get(`publicFacet.${governedIca}`);
+
+  const [portId, remoteAddress] = await Promise.all([
+    E(icaDaoPublicFacet).getPortId(),
+    E(icaDaoPublicFacet).getAddress(),
+  ]);
+  console.log('Port Id', portId, 'Addr', remoteAddress);
 
   console.log('Done');
 }
