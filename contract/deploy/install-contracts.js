@@ -24,7 +24,6 @@ export default async function deploy(homeP, { bundleSource, pathResolve }) {
 
   const promises = Object.entries(contracts).map(async ([key, location]) => {
     console.log('Installing', key, 'location', location);
-    // install Icarus, later this will be done on-chain
 
     const bundle = await bundleSource(pathResolve(location));
     const installation = await E(zoe).install(bundle);

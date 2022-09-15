@@ -6,7 +6,7 @@ import { registerQuestion, apiQuestion } from './constants.js';
 
 const options = {
   voteChange: true,
-  voteApiQuestion: true,
+  question: apiQuestion,
 };
 
 /**
@@ -17,13 +17,14 @@ const options = {
 
 export default async function deploy(homeP) {
   const { scratch } = await homeP;
-  const question = options.voteApiQuestion ? apiQuestion : registerQuestion;
+  const question = options.question;
 
   console.log('Getting from scratch');
 
-  const [questionPublicFacet, voterFacet] = await Promise.all([
+  const [questionPublicFacet, voterFacet1, voterFacet2] = await Promise.all([
     E(scratch).get(`publicFacet.${question}`),
-    E(scratch).get('icaVoterFacet'),
+    E(scratch).get('icaVoterFacet1'),
+    E(scratch).get('icaVoterFacet2'),
   ]);
 
   const [isOpen, questionDetails] = await Promise.all([
@@ -52,7 +53,10 @@ export default async function deploy(homeP) {
   );
   console.log('===> Choice', choice);
 
-  await E(voterFacet).castBallotFor(questionHandle, [choice]);
+  await Promise.all([
+    E(voterFacet1).castBallotFor(questionHandle, [choice]),
+    E(voterFacet2).castBallotFor(questionHandle, [choice]),
+  ]);
 
   console.log('Done');
 }

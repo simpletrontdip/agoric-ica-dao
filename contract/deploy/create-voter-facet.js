@@ -7,7 +7,7 @@ import { committee } from './constants.js';
 
 const options = {
   pursePetName: 'Default Zoe invite purse',
-  overrideExisting: false,
+  overrideExisting: true,
 };
 
 /**
@@ -33,20 +33,25 @@ export default async function deploy(homeP) {
     E(scratch).get(`instance.${committee}`),
   ]);
 
-  const totalAmount = await E(invitationPurse).getCurrentAmount();
-  const value = totalAmount.value.find(v => v.instance === committeeInstance);
+  const createVoter = async voterKey => {
+    const totalAmount = await E(invitationPurse).getCurrentAmount();
+    const value = totalAmount.value.find(v => v.instance === committeeInstance);
 
-  assert(value, `No matched invititation found in this purse`);
-  const amount = AmountMath.make(totalAmount.brand, harden([value]));
+    assert(value, `No matched invititation found in this purse`);
+    const amount = AmountMath.make(totalAmount.brand, harden([value]));
 
-  const voterInvitation = await E(invitationPurse).withdraw(amount);
+    const voterInvitation = await E(invitationPurse).withdraw(amount);
 
-  console.log('Offering invitation to get voterSeat');
-  const voterSeat = E(zoe).offer(voterInvitation);
-  const voterFacet = E(voterSeat).getOfferResult();
+    console.log('Offering invitation to get voterSeat');
+    const voterSeat = E(zoe).offer(voterInvitation);
+    const voterFacet = E(voterSeat).getOfferResult();
 
-  console.log('Writing `icaVoterFacet` to scratch');
-  await E(scratch).set('icaVoterFacet', voterFacet);
+    console.log(`Writing '${voterKey}' to scratch`);
+    await E(scratch).set(voterKey, voterFacet);
+  };
+
+  await createVoter('icaVoterFacet1');
+  await createVoter('icaVoterFacet2');
 
   console.log('Done');
 }
